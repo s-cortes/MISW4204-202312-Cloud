@@ -1,0 +1,42 @@
+version: "3.2"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+  
+  postgres:
+    container_name: 'pgsql'
+    image: postgres:alpine
+    env_file:
+      - db.env
+    environment:
+      PGDATA: /data/postgres
+    volumes:
+       - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    restart: always
+
+  converter-api:
+    container_name: 'converter-api'
+    build:
+      context: ./converter
+      dockerfile: api.Dockerfile
+    working_dir: /backend/
+    env_file:
+      - db.env
+      - converter/app.env
+    command: sh api.sh
+    ports:
+      - 5001:5000
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

@@ -1,2 +1,77 @@
 # MISW4204-202312-Cloud
-Repositorio para el desarrollo de las funcionalidades del proyecto cloud conversion tool, del curso Desarrollo de Software en la Nube
+Repository for the development of the functionalities of the cloud conversion tool project, of the Cloud Software Development course
+
+## Build and Local Deployment
+
+For building the application on a local enviroment, the following steps must be carried out
+
+### Local Deployment
+
+```bash
+$ # First, clone the repo
+$ git clone https://github.com/s-cortes/MISW4204-202312-Cloud.git
+$ cd MISW4204-202312-Cloud
+$
+$ # Define a virtual environment
+$ python3 -m venv venv
+$ . venv/bin/activate
+$
+$ # Install requirements
+$ pip3 install -r converter/requirements.txt
+$
+$ # --host=0.0.0.0 - expose the app on all network interfaces (default 127.0.0.1)
+$ # --port=5000    - specify the app port (default 5000)  
+$ flask run --host=0.0.0.0 --port=5000
+$
+$ # Access the UI in browser: http://127.0.0.1:5000/
+```
+
+### Using Docker Compose
+
+```bash
+$ # First, clone the repo
+$ git clone https://github.com/s-cortes/MISW4204-202312-Cloud.git
+$ cd MISW4204-202312-Cloud
+$
+$ # Define a virtual environment
+$ python3 -m venv venv
+$ . venv/bin/activate
+$
+$ # Use Docker Compose CLI to run microservice
+$ docker compose up --build converter-api
+$
+$ # Access the UI in browser: http://127.0.0.1:5000/
+```
+
+<br />
+
+## Code-base structure
+
+The project has a simple structure, represented as bellow:
+
+```bash
+< PROJECT ROOT >
+📦MISW4204-202312-Cloud
+ ┣-- 📂converter
+ ┃   ┣-- 📂app
+ ┃   ┃   ┣-- 📜__init__.py
+ ┃   ┃   ┣-- 📜handlers.py
+ ┃   ┃   ┣-- 📜models.py
+ ┃   ┃   ┗ 📜routes.py
+ ┃   ┃
+ ┃   ┣-- 📂config
+ ┃   ┃   ┣-- 📜__init__.py
+ ┃   ┃   ┗ 📜config.py
+ ┃   ┃
+ ┃   ┣-- 📜api.Dockerfile
+ ┃   ┣-- 📜api.sh
+ ┃   ┣-- 📜app.env
+ ┃   ┗-- 📜requirements.txt
+ ┃
+ ┣-- 📜.gitignore
+ ┣-- 📜LICENSE
+ ┣-- 📜README.md
+ ┣-- 📜db.env
+ ┗-- 📜docker-compose.yaml
+```
+
