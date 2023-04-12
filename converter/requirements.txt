@@ -1,0 +1,9 @@
+Flask
+flask-marshmallow
+Flask-RESTful
+flask-jwt-extended
+Flask-SQLAlchemy
+marshmallow
+marshmallow-sqlalchemy
+pyopenssl
+psycopg2
