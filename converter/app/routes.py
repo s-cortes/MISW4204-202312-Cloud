@@ -78,3 +78,8 @@ def login():
         raise BadRequest(
             f"Validation errors on Request Body: {', '.join(err.messages)}"
         )
+
+
+@app.route("/api/tasks", methods=["GET"])
+def get_task_list():
+    pass
