@@ -161,3 +161,25 @@ def get_task_list():
         return [task_schema.dump(task) for task in tasks], 200
     except:
         return {"error": "Failed to retrieve tasks"}, 500
+
+@jwt_required()
+@app.route("/api/files/<filename>", methods=["GET"])
+def recovery(filename):
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+        task = Task.query.filter(Task.user_id == user_id, Task.file_name == filename).first()
+        convertido_type = request.args.get("convertido", None, str)
+        if convertido_type == "1":
+            if(task.status == Status.PROCESSED):
+                filename = filename + task.new_format
+                return send_from_directory(directory= app.config["UPLOAD_FOLDER"] ,filename=filename)
+            else:
+                raise BadRequest("Error: File not processed yet")
+        elif convertido_type == "0":
+            filename = filename + task.old_format
+            return send_from_directory(directory= app.config["UPLOAD_FOLDER"] ,filename=filename)
+        else:
+            raise BadRequest("data/convertido Error: not compatible")
+    except:
+        return {"error": "Failed to retrieve file"}, 500
