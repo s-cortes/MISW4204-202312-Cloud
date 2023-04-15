@@ -14,7 +14,7 @@ def handle_bad_request(error: BadRequest):
     return response
 
 @app.errorhandler(UnprocessableEntity)
-def handle_unprocessable_entity(error):
+def handle_unprocessable_entity(error: UnprocessableEntity):
     response = error.get_response()
     response.data = dumps({
         "code": error.code,

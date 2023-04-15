@@ -1,5 +1,10 @@
+import enum
+import datetime
+
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, validate
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+
 
 db = SQLAlchemy()
 
@@ -8,7 +13,33 @@ class User(db.Model):
     username = db.Column(db.String(), nullable=False)
     password = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False)
+    tasks = db.relationship('Task', backref='user', lazy=True)
 
+class Status(enum.Enum):
+    UPLOADED = "uploaded"
+    PROCESSED = "processed"
+
+ALLOWED_FORMATS = ("zip", "7z", "tar.gz", "tar.bz2")
+
+
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    file_name = db.Column(db.String(), nullable=False, unique=True)
+    old_format = db.Column(db.String(), nullable=False)
+    new_format = db.Column(db.String(), nullable=False)
+    time_stamp = db.Column(db.DateTime(), default=datetime.datetime.utcnow())
+    status = db.Column(db.Enum(Status))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "file_name": self.file_name,
+            "new_format": self.new_format,
+            "time_stamp": self.time_stamp,
+            "status": self.status.value,
+            "user_id": self.user_id,
+        }
 
 
 class SignUpSchema(Schema):
@@ -38,6 +69,7 @@ class SignUpSchema(Schema):
         ]
     )
 
+
 class LogInSchema(Schema):
     username = fields.String(
         required=True,
@@ -56,5 +88,26 @@ class LogInSchema(Schema):
         ]
     )
 
+
+class TaskCreateSchema(Schema):
+    new_format = fields.String(
+        required=True,
+        validate=[validate.OneOf(ALLOWED_FORMATS)]
+    )
+
+class TaskSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Task
+        load_instance = True
+
+    file_name = fields.String()
+    new_format = fields.String()
+    old_format = fields.String()
+    time_stamp = fields.DateTime()
+    status = fields.String()
+    user_id = fields.Integer()
+
 signup_schema = SignUpSchema()
 login_schema = LogInSchema()
+task_create_schema = TaskCreateSchema()
+task_schema = TaskSchema()
