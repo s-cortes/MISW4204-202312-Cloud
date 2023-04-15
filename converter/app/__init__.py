@@ -24,9 +24,6 @@ def create_app(db):
     )
     debug = app.config.get("DEBUG", 0)
     app.config.from_object(ENV_CONFIG[debug])
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=1)
-    app.config['JWT_SECRET_KEY'] = 'secret-key'
-
 
     with app.app_context():
         db.init_app(app)
