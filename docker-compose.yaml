@@ -38,5 +38,20 @@ services:
     depends_on:
       - postgres
 
+  converter-async:
+    container_name: 'converter-async'
+    build:
+      context: ./converter
+      dockerfile: events.Dockerfile
+    working_dir: /backend/
+    environment:
+      PYTHONUNBUFFERED: 1
+    env_file:
+      - db.env
+      - converter/events.env
+    command: sh events.sh
+    depends_on:
+      - postgres
+
 volumes:
   postgres_data:
