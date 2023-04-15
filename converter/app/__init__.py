@@ -15,6 +15,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DB_ADDRESS = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_NETWORK}:5432/{DB_NAME}"
 
+
 def create_app(db):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(

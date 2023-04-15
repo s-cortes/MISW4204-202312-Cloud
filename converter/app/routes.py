@@ -117,8 +117,21 @@ def get_task_list():
     try:
         verify_jwt_in_request()
         user_id = get_jwt_identity()
+        # Get optional query parameters
+        max_tasks = request.args.get('max', None, int)
+        order = request.args.get('order', None, str)
         # Retrieve tasks for the authenticated user
-        tasks = Task.query.filter_by(user_id=user_id).all()
+        task_query = Task.query.filter_by(user_id=user_id)
+        # Limit the number of tasks
+        if max_tasks:
+            task_query = task_query.limit(int(max_tasks))
+        # Order the results
+        if order == '0':
+            task_query = task_query.order_by(Task.id.asc())
+        elif order == '1':
+            task_query = task_query.order_by(Task.id.desc())
+        # Return final list of tasks
+        tasks = task_query.all()
         return {"tasks": [task.to_dict() for task in tasks]}, 200
     except:
         return {"error": "Failed to retrieve tasks"}, 500
