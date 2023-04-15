@@ -9,4 +9,4 @@ RUN pip install -r api_requirements.txt
 
 ADD app /backend/app
 ADD config /backend/config
-EXPOSE 8080
+EXPOSE 5000
