@@ -1,13 +1,13 @@
 from hashlib import md5
 from flask import request
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, verify_jwt_in_request, get_jwt_identity, jwt_required
 from werkzeug.exceptions import BadRequest, UnprocessableEntity
 
 from sqlalchemy import or_
 from marshmallow import ValidationError
 
 from app import app
-from .models import db, signup_schema, login_schema, User
+from .models import db, signup_schema, login_schema, User, Task, Status, task_schema
 
 
 @app.route("/api/auth/signup", methods=["POST"])
@@ -60,6 +60,7 @@ def _validate_signup_date(username, email, password1, password2):
 
 @app.route("/api/auth/login", methods=["POST"])
 def login():
+
     try:
         data = login_schema.load(request.json)
 
@@ -80,6 +81,48 @@ def login():
         )
 
 
+def validate_token(auth_token):
+    try:
+        verify_jwt(auth_token, app.config["SECRET_KEY"], algorithms=["HS256"])
+        return True
+    except:
+        return False
+
+
+@app.route('/api/tasks', methods=['POST'])
+@jwt_required()
+def create_task():
+    try:
+        data = task_schema.load(request.json)
+
+        task = Task(
+            file_name=data["file_name"],
+            new_format=data["new_format"],
+            status=Status.UPLOADED,
+            user_id=data["user_id"],
+        )
+        db.session.add(task)
+        db.session.commit()
+
+        return {"message": "Task created successfully"}, 200
+    except ValidationError as err:
+        raise BadRequest(
+            f"Validation errors on Request Body: {', '.join(err.messages)}"
+        )
+
+
 @app.route("/api/tasks", methods=["GET"])
+@jwt_required()
 def get_task_list():
-    pass
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+        # Retrieve tasks for the authenticated user
+        tasks = Task.query.filter_by(user_id=user_id).all()
+        return {"tasks": [task.to_dict() for task in tasks]}, 200
+    except:
+        return {"error": "Failed to retrieve tasks"}, 500
+
+
+
+
