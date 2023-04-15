@@ -7,3 +7,4 @@ marshmallow
 marshmallow-sqlalchemy
 pyopenssl
 psycopg2
+pika
