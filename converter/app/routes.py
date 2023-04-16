@@ -2,6 +2,7 @@ import os
 from hashlib import md5
 
 from flask import request
+from flask import send_from_directory
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
