@@ -5,7 +5,7 @@ RUN mkdir /backend/storage
 WORKDIR /backend
 
 ADD events.sh /backend/
-ADD events /backend/
+ADD events /backend/events
 ADD events_requirements.txt /backend/
 
 RUN pip install -r events_requirements.txt
