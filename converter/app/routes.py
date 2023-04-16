@@ -201,7 +201,7 @@ def recovery(filename):
         task = Task.query.filter(Task.user_id == user_id, Task.file_name == filename).first()
         convertido_type = request.args.get("convertido", None, str)
         if convertido_type == "1":
-            if(task.status == Status.PROCESSED):
+            if(task.status == Status.PROCESSED.value):
                 filename = f"{task.filename}.{task.new_format}"
                 return send_from_directory(directory= app.config["UPLOAD_FOLDER"] ,filename=filename)
             else:
