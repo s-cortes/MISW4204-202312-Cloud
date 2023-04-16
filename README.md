@@ -21,6 +21,10 @@ $ docker compose up --build -d converter-api
 $ docker compose up --build -d --no-deps converter-async 
 $
 $ # Access the UI in browser: http://127.0.0.1:5000/
+$
+$ # Remove docker containers, local images, and volumes
+$ docker compose down -v --rmi local
+$
 ```
 
 <br />
