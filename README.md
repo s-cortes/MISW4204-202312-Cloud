@@ -5,42 +5,26 @@ Repository for the development of the functionalities of the cloud conversion to
 
 For building the application on a local enviroment, the following steps must be carried out
 
-### Local Deployment
+## Deployment | Docker Compose
 
 ```bash
 $ # First, clone the repo
 $ git clone https://github.com/s-cortes/MISW4204-202312-Cloud.git
 $ cd MISW4204-202312-Cloud
 $
-$ # Define a virtual environment
-$ python3 -m venv venv
-$ . venv/bin/activate
-$
-$ # Install requirements
-$ pip3 install -r converter/requirements.txt
-$
-$ # --host=0.0.0.0 - expose the app on all network interfaces (default 127.0.0.1)
-$ # --port=5000    - specify the app port (default 5000)  
-$ flask run --host=0.0.0.0 --port=5000
-$
-$ # Access the UI in browser: http://127.0.0.1:5000/
-```
-
-### Using Docker Compose
-
-```bash
-$ # First, clone the repo
-$ git clone https://github.com/s-cortes/MISW4204-202312-Cloud.git
-$ cd MISW4204-202312-Cloud
-$
-$ # Define a virtual environment
+$ # Define a virtual environment (optional)
 $ python3 -m venv venv
 $ . venv/bin/activate
 $
 $ # Use Docker Compose CLI to run microservice
-$ docker compose up --build converter-api
+$ docker compose up --build -d converter-api
+$ docker compose up --build -d --no-deps converter-async 
 $
 $ # Access the UI in browser: http://127.0.0.1:5000/
+$
+$ # Remove docker containers, local images, and volumes
+$ docker compose down -v --rmi local
+$
 ```
 
 <br />

@@ -1,8 +1,9 @@
+import os
 from hashlib import md5
+
 from flask import request
 from flask_jwt_extended import (
     create_access_token,
-    verify_jwt_in_request,
     get_jwt_identity,
     jwt_required,
 )
@@ -12,7 +13,7 @@ from werkzeug.exceptions import BadRequest, UnprocessableEntity
 from sqlalchemy import or_
 from marshmallow import ValidationError
 
-from app import app
+from app import app, publish_file_to_convert, STORAGE_DIR
 from .models import (
     db,
     signup_schema,
@@ -96,50 +97,78 @@ def login():
         )
 
 
-# def validate_token(auth_token):
-#     try:
-#         verify_jwt(auth_token, app.config["SECRET_KEY"], algorithms=["HS256"])
-#         return True
-#     except:
-#         return False
-
-
 @app.route("/api/tasks", methods=["POST"])
 @jwt_required()
 def create_task():
     try:
+        app.logger.info("Processing upload file")
         data = task_create_schema.load(request.args)
         user_id = get_jwt_identity()
-        
-        if 'file' not in request.files:
+
+        if "file" not in request.files:
             raise BadRequest("A file must be included for createing a task")
-        file = request.files['file']
-        # TODO validar raw_file
-        
+
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        file = request.files["file"]
+        if file.filename == "":
+            raise BadRequest("File cannot be empty")
+
+        new_format = allowed_format(data["new_format"])
+
+        file_name = secure_filename(file.filename)
+        file_name_split = file_name.split(".")
+
         task = Task(
-            file_name=secure_filename(file.filename),
-            old_format="", # TODO obtener el file_format luego de validar
-            new_format=data["new_format"],
-            status=Status.UPLOADED,
+            file_name=file_name_split[0],
+            old_format=file_name_split[1],
+            new_format=new_format,
+            status=Status.UPLOADED.value,
             user_id=user_id,
         )
         db.session.add(task)
         db.session.commit()
 
-        # TODO publish con el task.id dentro del mensaje
+        task.file_name = f"{task.file_name}_{task.id}"
+        db.session.commit()
 
-        return {"message": "Task created successfully"}, 200
+        file.save(os.path.join(STORAGE_DIR, file_name))
+        publish_file_to_convert(str(task.id))
+
+        response = dict(
+            message="Task created successfully",
+            filename=task.file_name
+        )
+
+        return response, 200
     except ValidationError as err:
         raise BadRequest(
             f"Validation errors on Request Body: {', '.join(err.messages)}"
         )
 
 
+def allowed_format(compression_type: str):
+    """
+    This function checks the compression type is allowed for processing
+
+    Args:
+        compression_type (str): The compression file type
+
+    Raises:
+        UnprocessableEntity: If the compression type is not allowed
+
+    Returns:
+        str: The allowed compression type
+    """
+    if compression_type not in ALLOWED_FORMATS:
+        raise UnprocessableEntity("Compress format not allowed")
+    return compression_type.lower()
+
+
 @app.route("/api/tasks", methods=["GET"])
 @jwt_required()
 def get_task_list():
     try:
-        verify_jwt_in_request()
         user_id = get_jwt_identity()
         # Get optional query parameters
         max_tasks = request.args.get("max", None, int)
@@ -155,7 +184,7 @@ def get_task_list():
             task_query = task_query.order_by(Task.id.asc())
         elif order == "1":
             task_query = task_query.order_by(Task.id.desc())
-        
+
         # Return final list of tasks
         tasks = task_query.all()
         return [task_schema.dump(task) for task in tasks], 200
@@ -172,14 +201,45 @@ def recovery(filename):
         convertido_type = request.args.get("convertido", None, str)
         if convertido_type == "1":
             if(task.status == Status.PROCESSED):
-                filename = filename + task.new_format
+                filename = f"{task.filename}.{task.new_format}"
                 return send_from_directory(directory= app.config["UPLOAD_FOLDER"] ,filename=filename)
             else:
                 raise BadRequest("Error: File not processed yet")
         elif convertido_type == "0":
-            filename = filename + task.old_format
+            filename = f"{task.filename}.{task.old_format}"
             return send_from_directory(directory= app.config["UPLOAD_FOLDER"] ,filename=filename)
         else:
             raise BadRequest("data/convertido Error: not compatible")
     except:
         return {"error": "Failed to retrieve file"}, 500
+
+@app.route("/api/task/<int:id_task>", methods=["DELETE"])
+@jwt_required()
+def delete(id_task):
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+        task = Task.query.get(id_task)
+        filename = f"{task.filename}.{task.new_format}"
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filename = f"{task.filename}.{task.old_format}"
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        db.session.delete(task)
+        db.session.commit()
+        return "Task and Files deleted", 200
+    except:
+        return {"error": "Failed to delete"}, 500
+        
+@app.route("/api/tasks/<int:task_id>", methods=["GET"])
+@jwt_required()
+def get_task(task_id):
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+        # Retrieve the task by id and user_id
+        task = Task.query.filter_by(id=task_id, user_id=user_id).first()
+        if not task:
+            return {"error": "Task not found or unauthorized access"}, 404
+        return {"task": task.to_dict()}, 200
+    except:
+        return {"error": "Failed to retrieve task"}, 500
