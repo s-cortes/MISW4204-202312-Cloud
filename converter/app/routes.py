@@ -12,7 +12,7 @@ from werkzeug.exceptions import BadRequest, UnprocessableEntity
 from sqlalchemy import or_
 from marshmallow import ValidationError
 
-from app import app
+from app import app, publish_file_to_convert, STORAGE_DIR, os
 from .models import (
     db,
     signup_schema,
@@ -108,25 +108,34 @@ def login():
 @jwt_required()
 def create_task():
     try:
+        app.logger.info('Processing upload file')
         data = task_create_schema.load(request.args)
         user_id = get_jwt_identity()
         
         if 'file' not in request.files:
             raise BadRequest("A file must be included for createing a task")
         file = request.files['file']
-        # TODO validar raw_file
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            raise BadRequest("File cannot be empty")
         
+        new_format=data["new_format"]
+        allowed_format(new_format)
+
+        filename = secure_filename(file.filename)
         task = Task(
-            file_name=secure_filename(file.filename),
-            old_format="", # TODO obtener el file_format luego de validar
-            new_format=data["new_format"],
+            file_name=filename,
+            old_format=file.filename.split('.')[1], 
+            new_format=new_format,
             status=Status.UPLOADED,
             user_id=user_id,
         )
         db.session.add(task)
         db.session.commit()
 
-        # TODO publish con el task.id dentro del mensaje
+        file.save(os.path.join(STORAGE_DIR, filename))
+        publish_file_to_convert(f"New compress task: {task.id}-{new_format}")
 
         return {"message": "Task created successfully"}, 200
     except ValidationError as err:
@@ -134,6 +143,10 @@ def create_task():
             f"Validation errors on Request Body: {', '.join(err.messages)}"
         )
 
+def allowed_format(format):
+    valid = format in ALLOWED_FORMATS
+    if valid is False:
+        raise UnprocessableEntity("Compress format not allowed")
 
 @app.route("/api/tasks", methods=["GET"])
 @jwt_required()
