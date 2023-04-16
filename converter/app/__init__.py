@@ -15,7 +15,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
 
 DB_ADDRESS = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_NETWORK}:5432/{DB_NAME}"
-#DB_ADDRESS = f"postgresql://postgres:password@localhost:5432/flasksql2"
 
 EXCHANGE_NAME = os.environ.get("EXCHANGE_NAME")
 KEY_NAME = os.environ.get("ROUTING_KEY_NAME")
