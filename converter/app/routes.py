@@ -199,9 +199,9 @@ def delete(id_task):
         verify_jwt_in_request()
         user_id = get_jwt_identity()
         task = Task.query.get(id_task)
-        filename = task.filename + task.new_format
+        filename = f"{task.filename}.{task.new_format}"
         os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        filename = task.filename + task.old_format
+        filename = f"{task.filename}.{task.old_format}"
         os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         db.session.delete(task)
         db.session.commit()
