@@ -8,5 +8,6 @@ ADD api_requirements.txt /backend/
 RUN pip install -r api_requirements.txt
 
 ADD app /backend/app
+ADD wsgi.py /backend/
 ADD config /backend/config
 EXPOSE 5000
