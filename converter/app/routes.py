@@ -129,10 +129,18 @@ def create_task():
         db.session.add(task)
         db.session.commit()
 
+        task.file_name = f"{task.file_name}_{task.id}"
+        db.session.commit()
+
         file.save(os.path.join(STORAGE_DIR, file_name))
         publish_file_to_convert(str(task.id))
 
-        return {"message": "Task created successfully"}, 200
+        response = dict(
+            message="Task created successfully",
+            filename=task.file_name
+        )
+
+        return response, 200
     except ValidationError as err:
         raise BadRequest(
             f"Validation errors on Request Body: {', '.join(err.messages)}"
