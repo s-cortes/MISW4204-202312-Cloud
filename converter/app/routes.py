@@ -161,3 +161,20 @@ def get_task_list():
         return [task_schema.dump(task) for task in tasks], 200
     except:
         return {"error": "Failed to retrieve tasks"}, 500
+
+@app.route("/api/task/<int:id_task>", methods=["DELETE"])
+@jwt_required()
+def delete(id_task):
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+        task = Task.query.get(id_task)
+        filename = task.filename + task.new_format
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filename = task.filename + task.old_format
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        db.session.delete(task)
+        db.session.commit()
+        return "Task and Files deleted", 200
+    except:
+        return {"error": "Failed to delete"}, 500
