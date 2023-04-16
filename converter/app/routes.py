@@ -133,13 +133,10 @@ def create_task():
         task.file_name = f"{task.file_name}_{task.id}"
         db.session.commit()
 
-        file.save(os.path.join(STORAGE_DIR, file_name))
+        file.save(os.path.join(STORAGE_DIR, task.file_name))
         publish_file_to_convert(str(task.id))
 
-        response = dict(
-            message="Task created successfully",
-            filename=task.file_name
-        )
+        response = dict(message="Task created successfully", filename=task.file_name)
 
         return response, 200
     except ValidationError as err:
@@ -192,27 +189,35 @@ def get_task_list():
     except:
         return {"error": "Failed to retrieve tasks"}, 500
 
+
 @jwt_required()
 @app.route("/api/files/<filename>", methods=["GET"])
 def recovery(filename):
     try:
         verify_jwt_in_request()
         user_id = get_jwt_identity()
-        task = Task.query.filter(Task.user_id == user_id, Task.file_name == filename).first()
+        task = Task.query.filter(
+            Task.user_id == user_id, Task.file_name == filename
+        ).first()
         convertido_type = request.args.get("convertido", None, str)
         if convertido_type == "1":
-            if(task.status == Status.PROCESSED.value):
+            if task.status == Status.PROCESSED.value:
                 filename = f"{task.filename}.{task.new_format}"
-                return send_from_directory(directory= app.config["UPLOAD_FOLDER"] ,filename=filename)
+                return send_from_directory(
+                    directory=app.config["UPLOAD_FOLDER"], filename=filename
+                )
             else:
                 raise BadRequest("Error: File not processed yet")
         elif convertido_type == "0":
             filename = f"{task.filename}.{task.old_format}"
-            return send_from_directory(directory= app.config["UPLOAD_FOLDER"] ,filename=filename)
+            return send_from_directory(
+                directory=app.config["UPLOAD_FOLDER"], filename=filename
+            )
         else:
             raise BadRequest("data/convertido Error: not compatible")
     except:
         return {"error": "Failed to retrieve file"}, 500
+
 
 @app.route("/api/task/<int:id_task>", methods=["DELETE"])
 @jwt_required()
@@ -222,15 +227,16 @@ def delete(id_task):
         user_id = get_jwt_identity()
         task = Task.query.get(id_task)
         filename = f"{task.filename}.{task.new_format}"
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        os.remove(os.path.join(app.config["UPLOAD_FOLDER"], filename))
         filename = f"{task.filename}.{task.old_format}"
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        os.remove(os.path.join(app.config["UPLOAD_FOLDER"], filename))
         db.session.delete(task)
         db.session.commit()
         return "Task and Files deleted", 200
     except:
         return {"error": "Failed to delete"}, 500
-        
+
+
 @app.route("/api/tasks/<int:task_id>", methods=["GET"])
 @jwt_required()
 def get_task(task_id):
