@@ -182,3 +182,17 @@ def get_task_list():
         return [task_schema.dump(task) for task in tasks], 200
     except:
         return {"error": "Failed to retrieve tasks"}, 500
+
+@app.route("/api/tasks/<int:task_id>", methods=["GET"])
+@jwt_required()
+def get_task(task_id):
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+        # Retrieve the task by id and user_id
+        task = Task.query.filter_by(id=task_id, user_id=user_id).first()
+        if not task:
+            return {"error": "Task not found or unauthorized access"}, 404
+        return {"task": task.to_dict()}, 200
+    except:
+        return {"error": "Failed to retrieve task"}, 500
