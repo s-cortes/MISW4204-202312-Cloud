@@ -1,4 +1,5 @@
 import os
+import pika
 
 from flask import Flask
 from flask_marshmallow import Marshmallow
@@ -15,6 +16,22 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
 
 DB_ADDRESS = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_NETWORK}:5432/{DB_NAME}"
+
+EXCHANGE_NAME = os.environ.get("EXCHANGE_NAME")
+KEY_NAME = os.environ.get("ROUTING_KEY_NAME")
+
+STORAGE_DIR = os.environ.get("STORAGE_DIR")
+print(f"Starting Subscription to {EXCHANGE_NAME}/{KEY_NAME}")
+
+connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
+channel = connection.channel()
+channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct")
+
+def publish_file_to_convert(message):
+    channel.basic_publish(
+        exchange=EXCHANGE_NAME, routing_key=KEY_NAME, body=message
+    )
+    app.logger.info(f"message published {message}")
 
 
 def create_app(db):
