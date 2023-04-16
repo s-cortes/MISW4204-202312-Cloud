@@ -6,9 +6,6 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-    volumes:
-      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
   
   postgres:
     container_name: 'pgsql'
@@ -32,10 +29,14 @@ services:
     env_file:
       - db.env
       - converter/app.env
+      - converter/events.env
+    volumes:
+       - file_data:/backend/storage
     command: sh api.sh
     ports:
       - 5001:5000
     depends_on:
+      - rabbitmq
       - postgres
 
   converter-async:
@@ -49,9 +50,13 @@ services:
     env_file:
       - db.env
       - converter/events.env
+    volumes:
+       - file_data:/backend/storage
     command: sh events.sh
     depends_on:
+      - rabbitmq
       - postgres
 
 volumes:
   postgres_data:
+  file_data:
