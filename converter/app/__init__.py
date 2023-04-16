@@ -4,7 +4,6 @@ import pika
 from flask import Flask
 from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
-import datetime
 from config import ENV_CONFIG
 from .models import db
 
@@ -21,17 +20,26 @@ EXCHANGE_NAME = os.environ.get("EXCHANGE_NAME")
 KEY_NAME = os.environ.get("ROUTING_KEY_NAME")
 
 STORAGE_DIR = os.environ.get("STORAGE_DIR")
-print(f"Starting Subscription to {EXCHANGE_NAME}/{KEY_NAME}")
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
-channel = connection.channel()
-channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct")
 
-def publish_file_to_convert(message):
-    channel.basic_publish(
-        exchange=EXCHANGE_NAME, routing_key=KEY_NAME, body=message
+def publish_file_to_convert(message: str):
+    """_summary_
+
+    Args:
+        message (str): _description_
+    """
+    app.logger.info(f"MQ - Starting RabbitMQ Connection")
+
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host="rabbitmq", heartbeat=600)
     )
-    app.logger.info(f"message published {message}")
+    channel = connection.channel()
+    channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct")
+
+    app.logger.info(f"MQ - Basic Publish with message={message}")
+    channel.basic_publish(exchange=EXCHANGE_NAME, routing_key=KEY_NAME, body=message)
+    connection.close()
+    app.logger.info(f"MQ - Completed Basic Publish successfully")
 
 
 def create_app(db):
@@ -39,7 +47,7 @@ def create_app(db):
     app.config.from_mapping(
         JWT_SECRET_KEY=SECRET_KEY,
         SQLALCHEMY_DATABASE_URI=DB_ADDRESS,
-        UPLOAD_FOLDER=UPLOAD_FOLDER
+        UPLOAD_FOLDER=UPLOAD_FOLDER,
     )
     debug = app.config.get("DEBUG", 0)
     app.config.from_object(ENV_CONFIG[debug])

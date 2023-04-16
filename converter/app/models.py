@@ -28,7 +28,7 @@ class Task(db.Model):
     old_format = db.Column(db.String(), nullable=False)
     new_format = db.Column(db.String(), nullable=False)
     time_stamp = db.Column(db.DateTime(), default=datetime.datetime.utcnow())
-    status = db.Column(db.Enum(Status))
+    status = db.Column(db.String(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def to_dict(self):

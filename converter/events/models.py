@@ -31,5 +31,6 @@ Task = Base.classes.task
 class TaskStatus(enum.Enum):
     UPLOADED = "uploaded"
     PROCESSED = "processed"
+    FAILED = "failed"
 
 session = Session(engine)
