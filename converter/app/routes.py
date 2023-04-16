@@ -2,6 +2,7 @@ import os
 from hashlib import md5
 
 from flask import request
+from flask import send_from_directory
 from flask_jwt_extended import (
     create_access_token,
     get_jwt_identity,
@@ -191,6 +192,27 @@ def get_task_list():
     except:
         return {"error": "Failed to retrieve tasks"}, 500
 
+@jwt_required()
+@app.route("/api/files/<filename>", methods=["GET"])
+def recovery(filename):
+    try:
+        verify_jwt_in_request()
+        user_id = get_jwt_identity()
+        task = Task.query.filter(Task.user_id == user_id, Task.file_name == filename).first()
+        convertido_type = request.args.get("convertido", None, str)
+        if convertido_type == "1":
+            if(task.status == Status.PROCESSED.value):
+                filename = f"{task.filename}.{task.new_format}"
+                return send_from_directory(directory= app.config["UPLOAD_FOLDER"] ,filename=filename)
+            else:
+                raise BadRequest("Error: File not processed yet")
+        elif convertido_type == "0":
+            filename = f"{task.filename}.{task.old_format}"
+            return send_from_directory(directory= app.config["UPLOAD_FOLDER"] ,filename=filename)
+        else:
+            raise BadRequest("data/convertido Error: not compatible")
+    except:
+        return {"error": "Failed to retrieve file"}, 500
 
 @app.route("/api/task/<int:id_task>", methods=["DELETE"])
 @jwt_required()
