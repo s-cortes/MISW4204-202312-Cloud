@@ -1,2 +1,3 @@
+echo "Running Converter Async Microservice $HOSTNAME"
 sleep 5
-python request_events.py
+python -m events.consumer
