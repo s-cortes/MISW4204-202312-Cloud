@@ -31,6 +31,10 @@ The project has a simple structure, represented as bellow:
  ┗-- 📜docker-compose.yaml
 ```
 
+## Arquitectura
+
+![4204-arquitectura drawio](https://user-images.githubusercontent.com/25346635/232369165-2d758a07-35d2-44be-a746-9ff9cd297835.png)
+
 <br />
 
 ## Build & Deployment | Docker Compose
