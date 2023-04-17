@@ -109,13 +109,34 @@ curl --location 'http://0.0.0.0:5001/api/files/<file_name>?convertido=0' \
 
 ## Capacity Tests
 
-For executing the capacity test scenarios, we used Apache Benchmark. The following command was used
+For executing the capacity test scenarios, we used Apache Benchmark. The following commands were used
 
 ```bash
-ab -n 100 -c 10 -H 'Authorization: Bearer <token>' -p "./converter/tests/data.txt" -T "multipart/form-data; boundary=1234567890" -rk -g "./converter/tests/outputs/output.csv" "http://localhost:5001/api/tasks?new_format=zip"
+# Install Apache Bencmark and graphing tool
+sudo apt install apache2-utils
+sudo apt-get install gnuplot
 
+# Execute test | replace <token>
+ab -n 1000 -c 10 -H 'Authorization: Bearer <token>' -p "./converter/tests/data.txt" -T "multipart/form-data; boundary=1234567890" -rk -g "./converter/tests/outputs/output.csv" "http://0.0.0.0:5001/api/tasks?new_format=zip"
+
+# Graph results
+gnuplot plot.p
 ```
 
-Replace the values `n` and `c` for defining the number of requests and the number os concurrent requests. Additional, generating the access token can be done by using the postman collection (link), or using the following command
+Replace the values `n` and `c` for defining the number of requests and the number os concurrent requests. Additional, generating the access token can be done by using the postman collection (link), or using the following command.
+
+Regarding the graph generation tool, create a file `plot.p` with the following data
+
+```text
+set terminal png size 600
+set output "output.png"
+set title "XX Requests, YY Concurrent Requests"
+set size ratio 0.6
+set grid y
+set xlabel "Num. Requests"
+set ylabel "Response Time (ms)"
+plot "output.csv" using 9 smooth sbezier with lines title "http://ip_servidor/cipher"
+
+```
 
 

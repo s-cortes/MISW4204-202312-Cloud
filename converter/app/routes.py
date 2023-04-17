@@ -174,27 +174,41 @@ def get_task_list():
         # Retrieve tasks for the authenticated user
 
         task_query = Task.query.filter_by(user_id=user_id)
-        # Limit the number of tasks
-        if max_tasks:
-            task_query = task_query.limit(int(max_tasks))
         # Order the results
         if order == "0":
             task_query = task_query.order_by(Task.id.asc())
         elif order == "1":
             task_query = task_query.order_by(Task.id.desc())
 
+        # Limit the number of tasks
+        if max_tasks:
+            task_query = task_query.limit(int(max_tasks))
+
         # Return final list of tasks
         tasks = task_query.all()
         return [task_schema.dump(task) for task in tasks], 200
-    except:
-        return {"error": "Failed to retrieve tasks"}, 500
+    except Exception as ex:
+        return {"error": str(ex)}, 500
 
 
+@app.route("/api/tasks/<int:task_id>", methods=["GET"])
 @jwt_required()
+def get_task(task_id):
+    try:
+        user_id = get_jwt_identity()
+        # Retrieve the task by id and user_id
+        task = Task.query.filter_by(id=task_id, user_id=user_id).first()
+        if not task:
+            return {"error": "Task not found or unauthorized access"}, 404
+        return task_schema.dump(task), 200
+    except Exception as ex:
+        return {"error": str(ex)}, 500
+
+
 @app.route("/api/files/<filename>", methods=["GET"])
+@jwt_required()
 def recovery(filename):
     try:
-        verify_jwt_in_request()
         user_id = get_jwt_identity()
         task = Task.query.filter(
             Task.user_id == user_id, Task.file_name == filename
@@ -202,51 +216,39 @@ def recovery(filename):
         convertido_type = request.args.get("convertido", None, str)
         if convertido_type == "1":
             if task.status == Status.PROCESSED.value:
-                filename = f"{task.filename}.{task.new_format}"
+                filename = f"{task.file_name}.{task.new_format}"
                 return send_from_directory(
-                    directory=app.config["UPLOAD_FOLDER"], filename=filename
+                    app.config["UPLOAD_FOLDER"], filename, as_attachment=True
                 )
             else:
                 raise BadRequest("Error: File not processed yet")
         elif convertido_type == "0":
-            filename = f"{task.filename}.{task.old_format}"
+            filename = f"{task.file_name}.{task.old_format}"
             return send_from_directory(
-                directory=app.config["UPLOAD_FOLDER"], filename=filename
+                app.config["UPLOAD_FOLDER"], filename, as_attachment=True
             )
         else:
             raise BadRequest("data/convertido Error: not compatible")
-    except:
-        return {"error": "Failed to retrieve file"}, 500
+    except BadRequest as br_ex:
+        raise br_ex
+    except Exception as ex:
+        return {"error": str(ex)}, 500
 
 
-@app.route("/api/task/<int:id_task>", methods=["DELETE"])
+@app.route("/api/tasks/<int:id_task>", methods=["DELETE"])
 @jwt_required()
 def delete(id_task):
     try:
-        verify_jwt_in_request()
-        user_id = get_jwt_identity()
         task = Task.query.get(id_task)
-        filename = f"{task.filename}.{task.new_format}"
-        os.remove(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-        filename = f"{task.filename}.{task.old_format}"
-        os.remove(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-        db.session.delete(task)
-        db.session.commit()
-        return "Task and Files deleted", 200
-    except:
-        return {"error": "Failed to delete"}, 500
-
-
-@app.route("/api/tasks/<int:task_id>", methods=["GET"])
-@jwt_required()
-def get_task(task_id):
-    try:
-        verify_jwt_in_request()
-        user_id = get_jwt_identity()
-        # Retrieve the task by id and user_id
-        task = Task.query.filter_by(id=task_id, user_id=user_id).first()
-        if not task:
-            return {"error": "Task not found or unauthorized access"}, 404
-        return {"task": task.to_dict()}, 200
-    except:
-        return {"error": "Failed to retrieve task"}, 500
+        filename = f"{task.file_name}.{task.new_format}"
+        if task.status == Status.PROCESSED.value:
+            os.remove(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            filename = f"{task.file_name}.{task.old_format}"
+            os.remove(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            db.session.delete(task)
+            db.session.commit()
+            return {"message": "Task and Files deleted"}, 200
+        else:
+            return {"message": "Tasks being processed"}, 200
+    except Exception as ex:
+        return {"error": str(ex)}, 500
