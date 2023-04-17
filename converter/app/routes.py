@@ -133,7 +133,7 @@ def create_task():
         task.file_name = f"{task.file_name}_{task.id}"
         db.session.commit()
 
-        file.save(os.path.join(STORAGE_DIR, task.file_name))
+        file.save(os.path.join(STORAGE_DIR, f"{task.file_name}.{task.old_format}"))
         publish_file_to_convert(str(task.id))
 
         response = dict(message="Task created successfully", filename=task.file_name)

@@ -27,7 +27,8 @@ class Task(db.Model):
     file_name = db.Column(db.String(), nullable=False, unique=True)
     old_format = db.Column(db.String(), nullable=False)
     new_format = db.Column(db.String(), nullable=False)
-    time_stamp = db.Column(db.DateTime(), default=datetime.datetime.utcnow())
+    created_ts = db.Column(db.DateTime(), default=datetime.datetime.utcnow())
+    processed_ts = db.Column(db.DateTime(), nullable=True)
     status = db.Column(db.String(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
@@ -103,7 +104,8 @@ class TaskSchema(SQLAlchemyAutoSchema):
     file_name = fields.String()
     new_format = fields.String()
     old_format = fields.String()
-    time_stamp = fields.DateTime()
+    created_ts = fields.DateTime()
+    processed_ts = fields.DateTime()
     status = fields.String()
     user_id = fields.Integer()
 
