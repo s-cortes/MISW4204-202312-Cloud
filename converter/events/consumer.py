@@ -49,7 +49,7 @@ def execute_file_conversion(ch, method, properties, body):
         task = session.query(Task).filter_by(id=task_id).first()
         if not task:
             raise NoResultFound()
-
+        task.processed_ts = datetime.datetime.utcnow()
         compressor = CustomFileCompressorFactory.get_custom_file_converter(
             task.new_format
         )
@@ -64,7 +64,6 @@ def execute_file_conversion(ch, method, properties, body):
         print(f"MQ - Encountered Error while processing message: {ex}")
     finally:
         task.status = status
-        task.processed_ts = datetime.datetime.utcnow()
         session.commit()
         print("MQ - Completed message processing") 
 
