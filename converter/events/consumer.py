@@ -1,4 +1,5 @@
 import os
+import datetime
 import pika
 
 from sqlalchemy.orm.exc import NoResultFound
@@ -63,6 +64,7 @@ def execute_file_conversion(ch, method, properties, body):
         print(f"MQ - Encountered Error while processing message: {ex}")
     finally:
         task.status = status
+        task.processed_ts = datetime.datetime.utcnow()
         session.commit()
         print("MQ - Completed message processing") 
 
