@@ -1,6 +1,11 @@
 # MISW4204-202312-Cloud
 Repository for the development of the functionalities of the cloud conversion tool project, of the Cloud Software Development course
 
+## Useful links
+
+* [Postman Collection](https://app.getpostman.com/join-team?invite_code=cae57394629ace32d62eb6ae4f54096a&target_code=5cc4486c5f15defe8321bd338038b6af)
+* [Capacity Test Report](#)
+
 ## Code-base structure
 
 The project has a simple structure, represented as bellow:
@@ -9,20 +14,37 @@ The project has a simple structure, represented as bellow:
 < PROJECT ROOT >
 📦MISW4204-202312-Cloud
  ┣-- 📂converter
- ┃   ┣-- 📂app
+ ┣-- 📂app
  ┃   ┃   ┣-- 📜__init__.py
  ┃   ┃   ┣-- 📜handlers.py
  ┃   ┃   ┣-- 📜models.py
- ┃   ┃   ┗ 📜routes.py
+ ┃   ┃   ┗-- 📜routes.py
  ┃   ┃
  ┃   ┣-- 📂config
- ┃   ┃   ┣-- 📜__init__.py
+ ┃   ┃   ┣ 📜__init__.py
  ┃   ┃   ┗ 📜config.py
+ ┃   ┃
+ ┃   ┣-- 📂events
+ ┃   ┃   ┣-- 📜__init__.py
+ ┃   ┃   ┣-- 📜consumer.py
+ ┃   ┃   ┣ 📜converter.py
+ ┃   ┃   ┗-- 📜models.py
+ ┃   ┃
+ ┃   ┣-- 📂tests
+ ┃   ┃   ┣-- 📂outputs
+ ┃   ┃   ┃
+ ┃   ┃   ┣-- 📜data.txt
+ ┃   ┃   ┗-- 📜test_file.jpg
  ┃   ┃
  ┃   ┣-- 📜api.Dockerfile
  ┃   ┣-- 📜api.sh
+ ┃   ┣-- 📜api_requirements.txt
  ┃   ┣-- 📜app.env
- ┃   ┗-- 📜requirements.txt
+ ┃   ┣-- 📜events.Dockerfile
+ ┃   ┣-- 📜events.env
+ ┃   ┣-- 📜events.sh
+ ┃   ┣-- 📜events_requirements.txt
+ ┃   ┗-- 📜wsgi.py
  ┃
  ┣-- 📜.gitignore
  ┣-- 📜LICENSE
@@ -30,6 +52,39 @@ The project has a simple structure, represented as bellow:
  ┣-- 📜db.env
  ┗-- 📜docker-compose.yaml
 ```
+
+📦converter
+ ┣-- 📂app
+ ┃   ┣-- 📜__init__.py
+ ┃   ┣-- 📜handlers.py
+ ┃   ┣-- 📜models.py
+ ┃   ┗-- 📜routes.py
+ ┃
+ ┣-- 📂config
+ ┃   ┣ 📜__init__.py
+ ┃   ┗ 📜config.py
+ ┃
+ ┣-- 📂events
+ ┃   ┣-- 📜__init__.py
+ ┃   ┣-- 📜consumer.py
+ ┃   ┣ 📜converter.py
+ ┃   ┗-- 📜models.py
+ ┃
+ ┣-- 📂tests
+ ┃   ┣-- 📂outputs
+ ┃   ┃
+ ┃   ┣-- 📜data.txt
+ ┃   ┗-- 📜test_file.jpg
+ ┃
+ ┣-- 📜api.Dockerfile
+ ┣-- 📜api.sh
+ ┣-- 📜api_requirements.txt
+ ┣-- 📜app.env
+ ┣-- 📜events.Dockerfile
+ ┣-- 📜events.env
+ ┣-- 📜events.sh
+ ┣-- 📜events_requirements.txt
+ ┗-- 📜wsgi.py
 
 ## Arquitectura
 
@@ -139,4 +194,6 @@ plot "output.csv" using 9 smooth sbezier with lines title "http://ip_servidor/ci
 
 ```
 
+### Capacity Test Results
 
+The results from each of the defined scenarios can be found on the following link
