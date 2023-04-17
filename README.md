@@ -53,39 +53,6 @@ The project has a simple structure, represented as bellow:
  ┗-- 📜docker-compose.yaml
 ```
 
-📦converter
- ┣-- 📂app
- ┃   ┣-- 📜__init__.py
- ┃   ┣-- 📜handlers.py
- ┃   ┣-- 📜models.py
- ┃   ┗-- 📜routes.py
- ┃
- ┣-- 📂config
- ┃   ┣ 📜__init__.py
- ┃   ┗ 📜config.py
- ┃
- ┣-- 📂events
- ┃   ┣-- 📜__init__.py
- ┃   ┣-- 📜consumer.py
- ┃   ┣ 📜converter.py
- ┃   ┗-- 📜models.py
- ┃
- ┣-- 📂tests
- ┃   ┣-- 📂outputs
- ┃   ┃
- ┃   ┣-- 📜data.txt
- ┃   ┗-- 📜test_file.jpg
- ┃
- ┣-- 📜api.Dockerfile
- ┣-- 📜api.sh
- ┣-- 📜api_requirements.txt
- ┣-- 📜app.env
- ┣-- 📜events.Dockerfile
- ┣-- 📜events.env
- ┣-- 📜events.sh
- ┣-- 📜events_requirements.txt
- ┗-- 📜wsgi.py
-
 ## Arquitectura
 
 ![4204-arquitectura drawio](https://user-images.githubusercontent.com/25346635/232369165-2d758a07-35d2-44be-a746-9ff9cd297835.png)
