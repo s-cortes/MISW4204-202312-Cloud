@@ -4,7 +4,8 @@ Repository for the development of the functionalities of the cloud conversion to
 ## Useful links
 
 * [Postman Collection](https://app.getpostman.com/join-team?invite_code=cae57394629ace32d62eb6ae4f54096a&target_code=5cc4486c5f15defe8321bd338038b6af)
-* [Capacity Test Report](#)
+* [Reporte Pruebas de Estrés](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/Ec5MbgPvdRlGtJtXNniVAZMBc9uFRBpXU-un7V9OKP3Vxg?e=Csb289)
+* [Video Sustentación](#)
 
 ## Code-base structure
 
