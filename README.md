@@ -33,11 +33,7 @@ The project has a simple structure, represented as bellow:
 
 <br />
 
-## Build and Local Deployment
-
-For building the application on a local enviroment, the following steps must be carried out
-
-## Deployment | Docker Compose
+## Build & Deployment | Docker Compose
 
 ```bash
 $ # First, clone the repo
