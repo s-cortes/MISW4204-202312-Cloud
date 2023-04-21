@@ -252,3 +252,7 @@ def delete(id_task):
             return {"message": "Tasks being processed"}, 200
     except Exception as ex:
         return {"error": str(ex)}, 500
+    
+@app.route("/")
+def hello_world():
+    return "Hello, World!"
