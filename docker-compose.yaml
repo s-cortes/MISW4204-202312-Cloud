@@ -51,7 +51,7 @@ services:
       - db.env
       - converter/events.env
     volumes:
-       - file_data:/backend/storage
+       - /nfs/storage:/backend/storage
     command: sh events.sh
     depends_on:
       - rabbitmq
