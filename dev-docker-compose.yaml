@@ -31,7 +31,7 @@ services:
       - converter/app.env
       - converter/events.env
     volumes:
-       - /nfs/storage:/backend/storage
+       - file_data:/backend/storage
     command: sh api.sh
     ports:
       - 5001:5000
@@ -51,7 +51,7 @@ services:
       - db.env
       - converter/events.env
     volumes:
-       - /nfs/storage:/backend/storage
+       - file_data:/backend/storage
     command: sh events.sh
     depends_on:
       - rabbitmq
@@ -59,3 +59,4 @@ services:
 
 volumes:
   postgres_data:
+  file_data:
