@@ -31,7 +31,7 @@ services:
       - converter/app.env
       - converter/events.env
     volumes:
-       - file_data:/backend/storage
+       - /nfs/storage:/backend/storage
     command: sh api.sh
     ports:
       - 5001:5000
