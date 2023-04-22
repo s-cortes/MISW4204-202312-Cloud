@@ -6,7 +6,7 @@ from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
 from config import ENV_CONFIG
 from .models import db
-from publisher import gcp_publisher, rabbit_publisher
+from .publisher import Publisher
 
 DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 DB_USER = os.environ.get("POSTGRES_USER")
@@ -31,9 +31,9 @@ def publish_file_to_convert(message: str):
     """
     debug = app.config.get("DEBUG", 0)
     if (debug):
-        rabbit_publisher(message)
+        Publisher.rabbit_publisher(message)
     else:
-        gcp_publisher(message)
+        Publisher.gcp_publisher(message)
     
 
 

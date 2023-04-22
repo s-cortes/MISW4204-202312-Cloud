@@ -9,3 +9,4 @@ pyopenssl
 psycopg2
 pika
 gunicorn
+google.cloud.pubsub
