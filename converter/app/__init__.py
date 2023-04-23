@@ -6,6 +6,7 @@ from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
 from config import ENV_CONFIG
 from .models import db
+from .publisher import Publisher
 
 DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 DB_USER = os.environ.get("POSTGRES_USER")
@@ -28,18 +29,12 @@ def publish_file_to_convert(message: str):
     Args:
         message (str): _description_
     """
-    app.logger.info(f"MQ - Starting RabbitMQ Connection")
-
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host="rabbitmq", heartbeat=600)
-    )
-    channel = connection.channel()
-    channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct")
-
-    app.logger.info(f"MQ - Basic Publish with message={message}")
-    channel.basic_publish(exchange=EXCHANGE_NAME, routing_key=KEY_NAME, body=message)
-    connection.close()
-    app.logger.info(f"MQ - Completed Basic Publish successfully")
+    debug = app.config.get("DEBUG", 0)
+    if (debug):
+        Publisher.rabbit_publisher(message)
+    else:
+        Publisher.gcp_publisher(message)
+    
 
 
 def create_app(db):
