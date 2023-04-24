@@ -17,7 +17,7 @@ QUEUE_NAME = os.environ.get("ROUTING_QUEUE")
 KEY_NAME = os.environ.get("ROUTING_KEY_NAME")
 STORAGE_DIR = os.environ.get("STORAGE_DIR")
 PROJECT_ID = os.environ.get("PROJECT_ID")
-TOPIC_ID = os.environ.get("TOPIC_ID")
+SUBSCRIPTION = os.environ.get("SUBSCRIPTION")
 
 
 def execute_file_conversion(task_id:int):
@@ -95,7 +95,7 @@ def rabbit_consume():
 def gcp_consumer():
     print(f"Starting GCP-Pub/Sub..")
     GCPSUSCRIBE = pubsub_v1.SubscriberClient()
-    subscription_path = GCPSUSCRIBE.subscription_path(PROJECT_ID, TOPIC_ID)
+    subscription_path = GCPSUSCRIBE.subscription_path(PROJECT_ID, SUBSCRIPTION)
     streaming_pull_future = GCPSUSCRIBE.subscribe(subscription_path, callback=gcp_callback)
     print(f"Listening GCP-Pub/Sub for messages on {subscription_path}..\n")
 
