@@ -56,7 +56,8 @@ The project has a simple structure, represented as bellow:
 
 ## Arquitectura
 
-![4204-arquitectura drawio](https://user-images.githubusercontent.com/25346635/232369165-2d758a07-35d2-44be-a746-9ff9cd297835.png)
+### Modelo de Componentes
+![4204-arquitectura-Componentes drawio](https://user-images.githubusercontent.com/103398826/233892781-c3200419-642b-4a78-bec7-3d9239b82d55.png)
 
 <br />
 
