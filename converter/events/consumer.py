@@ -101,7 +101,8 @@ def gcp_consumer():
 
     with GCPSUSCRIBE:
         try:
-            streaming_pull_future.result(timeout=timeout)
+            #streaming_pull_future.result(timeout=timeout)
+            streaming_pull_future.result()
         except TimeoutError:
             streaming_pull_future.cancel()
             streaming_pull_future.result()
