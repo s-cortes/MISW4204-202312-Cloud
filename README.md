@@ -59,6 +59,9 @@ The project has a simple structure, represented as bellow:
 ### Modelo de Componentes
 ![4204-arquitectura-Componentes drawio](https://user-images.githubusercontent.com/103398826/233892781-c3200419-642b-4a78-bec7-3d9239b82d55.png)
 
+### Modelo de despliegue
+![4204-arquitectura-Despliegue drawio](https://user-images.githubusercontent.com/103398826/233892885-beaeb1c4-aac1-48c4-aa9e-ce37e0496cac.png)
+
 <br />
 
 ## Build & Deployment | Docker Compose
