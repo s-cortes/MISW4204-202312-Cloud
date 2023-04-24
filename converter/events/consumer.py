@@ -73,11 +73,11 @@ def rabbit_calback(ch, method, properties, body):
 
 
 def rabbit_consume():
+    print(f"Starting RabbitMQ Subscription to {EXCHANGE_NAME}/{QUEUE_NAME}/{KEY_NAME}")
     connection = pika.BlockingConnection(
     pika.ConnectionParameters(host="rabbitmq", heartbeat=600)
     )
     channel = connection.channel()
-    print(f"Starting RabbitMQ Subscription to {EXCHANGE_NAME}/{QUEUE_NAME}/{KEY_NAME}")
 
     channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct")
 
@@ -93,6 +93,7 @@ def rabbit_consume():
 
 
 def gcp_consumer():
+    print(f"Starting GCP-Pub/Sub..")
     GCPSUSCRIBE = pubsub_v1.SubscriberClient()
     subscription_path = GCPSUSCRIBE.subscription_path(PROJECT_ID, TOPIC_ID)
     streaming_pull_future = GCPSUSCRIBE.subscribe(subscription_path, callback=gcp_callback)
@@ -106,7 +107,8 @@ def gcp_consumer():
             streaming_pull_future.result()
 
 
-debug = os.environ.get("EVENTS_DEBUG", 0)
+debug = os.environ.get("EVENTS_DEBUG", 0) == 1
+print(f"debug:{debug}")
 if (debug):
     rabbit_consume()
 else:
