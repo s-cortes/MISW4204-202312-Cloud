@@ -4,8 +4,10 @@ Repository for the development of the functionalities of the cloud conversion to
 ## Useful links
 
 * [Postman Collection](https://app.getpostman.com/join-team?invite_code=cae57394629ace32d62eb6ae4f54096a&target_code=5cc4486c5f15defe8321bd338038b6af)
-* [Reporte Pruebas de Estrés](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/EUTwOnjRYWZKmzqXi2xhOC4Bc2kx2h1KGPqGV-zhcODzpQ?e=XrMCNC)
-* [Video Sustentación](https://uniandes-my.sharepoint.com/:f:/g/personal/l_simonetti_uniandes_edu_co/EiAFKYbMZ4hAt3ECM4rZFn0BL8coWWLTMnKXGFa4d7tx1A?e=cqaxm6)
+* [Reporte Escenario y Pruebas de Estrés API REST y Batch](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/EXK8r3HVdGxMsqb7FtzH1Q8BMBVWz2lp56hDAfDfF4-ROw?e=asuJVT)
+* [Documentación de Arquitectura](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/EVJHwby2hhFGvw_9Ik5wMxUBRm5JxCqapjENZ0chJc1pkw?e=Gdhn1b)
+* [Video Sustentación]()
+
 
 ## Code-base structure
 
@@ -150,7 +152,7 @@ ab -n 1000 -c 10 -H 'Authorization: Bearer <token>' -p "./converter/tests/data.t
 gnuplot plot.p
 ```
 
-Replace the values `n` and `c` for defining the number of requests and the number os concurrent requests. Additional, generating the access token can be done by using the postman collection (link), or using the following command.
+Replace the values `n` and `c` for defining the number of requests and the number os concurrent requests. Additional, generating the access token can be done by using the [Postman Collection](https://app.getpostman.com/join-team?invite_code=cae57394629ace32d62eb6ae4f54096a&target_code=5cc4486c5f15defe8321bd338038b6af), or using the following command.
 
 Regarding the graph generation tool, create a file `plot.p` with the following data
 
