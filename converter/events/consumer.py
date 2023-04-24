@@ -7,41 +7,20 @@ from sqlalchemy.orm.exc import NoResultFound
 from .models import session, Task, TaskStatus
 from .converter import CustomFileCompressorFactory
 
+from google.cloud import pubsub_v1
+from concurrent.futures import TimeoutError
+
+GCPSUSCRIBE = pubsub_v1.SuscriberClient()
+timeout = 10.0
 EXCHANGE_NAME = os.environ.get("EXCHANGE_NAME")
 QUEUE_NAME = os.environ.get("ROUTING_QUEUE")
 KEY_NAME = os.environ.get("ROUTING_KEY_NAME")
-
 STORAGE_DIR = os.environ.get("STORAGE_DIR")
-
-connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host="rabbitmq", heartbeat=600)
-)
-channel = connection.channel()
-print(f"Starting Subscription to {EXCHANGE_NAME}/{QUEUE_NAME}/{KEY_NAME}")
-
-channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct")
-
-result = channel.queue_declare(queue=QUEUE_NAME, exclusive=False)
-queue_name = result.method.queue
-
-channel.queue_bind(exchange=EXCHANGE_NAME, queue=queue_name, routing_key=KEY_NAME)
+PROJECT_ID = os.environ.get("PROJECT_ID")
+TOPIC_ID = os.environ.get("TOPIC_ID")
 
 
-def execute_file_conversion(ch, method, properties, body):
-    """
-    Callback function for processing async compression requests.
-
-    Args:
-        ch (BlockingChannel): Connection channel
-        method (any): method
-        properties (any): properties
-        body (any): Message, contains the task id for processing
-
-    Raises:
-        NoResultFound: If the task id cannot retrive a row from DB
-    """
-
-    task_id = int(body.decode("utf-8"))
+def execute_file_conversion(task_id:int):
     status = TaskStatus.PROCESSED.value
     print(f"MQ - Consuming new message from queue (body={task_id})")
 
@@ -68,7 +47,66 @@ def execute_file_conversion(ch, method, properties, body):
         print("MQ - Completed message processing") 
 
 
-channel.basic_consume(
-    queue=queue_name, on_message_callback=execute_file_conversion, auto_ack=True
-)
-channel.start_consuming()
+def gcp_callback(message: pubsub_v1.subscriber.message.Message) -> None:
+    print(f"Received {message}.")
+    task_id = int(message.data.decode("utf-8"))
+    execute_file_conversion(task_id)
+    message.ack()
+
+
+def rabbit_calback(ch, method, properties, body):
+    """
+    Callback function for processing async compression requests.
+
+    Args:
+        ch (BlockingChannel): Connection channel
+        method (any): method
+        properties (any): properties
+        body (any): Message, contains the task id for processing
+
+    Raises:
+        NoResultFound: If the task id cannot retrive a row from DB
+    """
+
+    task_id = int(body.decode("utf-8"))
+    execute_file_conversion(task_id)
+
+
+def rabbit_consume():
+    connection = pika.BlockingConnection(
+    pika.ConnectionParameters(host="rabbitmq", heartbeat=600)
+    )
+    channel = connection.channel()
+    print(f"Starting RabbitMQ Subscription to {EXCHANGE_NAME}/{QUEUE_NAME}/{KEY_NAME}")
+
+    channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct")
+
+    result = channel.queue_declare(queue=QUEUE_NAME, exclusive=False)
+    queue_name = result.method.queue
+
+    channel.queue_bind(exchange=EXCHANGE_NAME, queue=queue_name, routing_key=KEY_NAME)
+
+    channel.basic_consume(
+    queue=queue_name, on_message_callback=rabbit_calback, auto_ack=True
+    )
+    channel.start_consuming()
+
+
+def gcp_consumer():
+    subscription_path = GCPSUSCRIBE.subscription_path(PROJECT_ID, TOPIC_ID)
+    streaming_pull_future = GCPSUSCRIBE.subscribe(subscription_path, callback=gcp_callback)
+    print(f"Listening GCP-Pub/Sub for messages on {subscription_path}..\n")
+
+    with GCPSUSCRIBE:
+        try:
+            streaming_pull_future.result(timeout=timeout)
+        except TimeoutError:
+            streaming_pull_future.cancel()
+            streaming_pull_future.result()
+
+
+debug = os.environ.get("EVENTS_DEBUG", 0)
+if (debug):
+    rabbit_consume()
+else:
+    gcp_consumer()
