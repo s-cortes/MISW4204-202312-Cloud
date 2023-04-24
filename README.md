@@ -21,6 +21,7 @@ The project has a simple structure, represented as bellow:
  ┃   ┃   ┣-- 📜__init__.py
  ┃   ┃   ┣-- 📜handlers.py
  ┃   ┃   ┣-- 📜models.py
+ ┃   ┃   ┣-- 📜publisher.py
  ┃   ┃   ┗-- 📜routes.py
  ┃   ┃
  ┃   ┣-- 📂config
