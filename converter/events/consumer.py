@@ -10,7 +10,7 @@ from .converter import CustomFileCompressorFactory
 from google.cloud import pubsub_v1
 from concurrent.futures import TimeoutError
 
-GCPSUSCRIBE = pubsub_v1.SuscriberClient()
+
 timeout = 10.0
 EXCHANGE_NAME = os.environ.get("EXCHANGE_NAME")
 QUEUE_NAME = os.environ.get("ROUTING_QUEUE")
@@ -93,6 +93,7 @@ def rabbit_consume():
 
 
 def gcp_consumer():
+    GCPSUSCRIBE = pubsub_v1.SubscriberClient()
     subscription_path = GCPSUSCRIBE.subscription_path(PROJECT_ID, TOPIC_ID)
     streaming_pull_future = GCPSUSCRIBE.subscribe(subscription_path, callback=gcp_callback)
     print(f"Listening GCP-Pub/Sub for messages on {subscription_path}..\n")
