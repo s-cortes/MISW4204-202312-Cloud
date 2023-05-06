@@ -1,6 +1,5 @@
 import os
 import pika
-
 from flask import Flask
 from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
@@ -16,6 +15,7 @@ DB_ADDRESS = os.environ.get("POSTGRES_NETWORK")
 SQLALCHEMY_DB_URI= f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_ADDRESS}:5432/{DB_NAME}"
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
+
 STORAGE_DIR = os.environ.get("UPLOAD_FOLDER")
 
 
