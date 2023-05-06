@@ -15,7 +15,7 @@ timeout = 10.0
 EXCHANGE_NAME = os.environ.get("EXCHANGE_NAME")
 QUEUE_NAME = os.environ.get("ROUTING_QUEUE")
 KEY_NAME = os.environ.get("ROUTING_KEY_NAME")
-STORAGE_DIR = "gs://conversion-files-bucket/"
+STORAGE_DIR = os.environ.get("UPLOAD_FOLDER")
 PROJECT_ID = os.environ.get("PROJECT_ID")
 SUBSCRIPTION = os.environ.get("SUBSCRIPTION")
 
