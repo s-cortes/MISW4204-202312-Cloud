@@ -57,12 +57,12 @@ The project has a simple structure, represented as bellow:
  ┗-- 📜docker-compose.yaml
 ```
 
-## Arquitectura
+## Architectura
 
-### Modelo de Componentes
+### Components Model
 ![4204-arquitectura-Componentes Semana 5 drawio](https://user-images.githubusercontent.com/103398826/236718422-f5210d17-c882-4349-b268-6340df9aefe4.png)
 
-### Modelo de despliegue
+### Deployment Model
 ![4204-arquitectura-Despliegue Semana 5 drawio](https://user-images.githubusercontent.com/103398826/236718451-718825eb-89bf-405c-ba71-2cac28a279cf.png)
 
 <br />
