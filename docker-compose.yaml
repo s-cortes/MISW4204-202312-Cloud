@@ -34,7 +34,7 @@ services:
        - /nfs/storage:/backend/storage
     command: sh api.sh
     ports:
-      - 5001:5000
+      - 8080:5000
 
   converter-async:
     container_name: 'converter-async'
