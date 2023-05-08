@@ -4,9 +4,9 @@ Repository for the development of the functionalities of the cloud conversion to
 ## Useful links
 
 * [Postman Collection](https://app.getpostman.com/join-team?invite_code=cae57394629ace32d62eb6ae4f54096a&target_code=5cc4486c5f15defe8321bd338038b6af)
-* [Reporte Escenario y Pruebas de Estrés API REST y Batch](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/EXK8r3HVdGxMsqb7FtzH1Q8BMBVWz2lp56hDAfDfF4-ROw?e=n8SqfZ)
-* [Documentación de Arquitectura](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/EVJHwby2hhFGvw_9Ik5wMxUBRm5JxCqapjENZ0chJc1pkw?e=Gdhn1b)
-* [Video Sustentación](https://uniandes-my.sharepoint.com/:f:/g/personal/l_simonetti_uniandes_edu_co/EhSdVfsacvxAo8z727AdLgUBq1RWfO7wmm-CHE12KdLFtg?e=ALNn3I)
+* [Reporte Escenario y Pruebas de Estrés API REST y Batch]() [UPDATE]
+* [Documentación de Arquitectura]() [UPDATE]
+* [Video Sustentación]() [UPDATE]
 
 
 ## Code-base structure
@@ -168,7 +168,3 @@ set ylabel "Response Time (ms)"
 plot "output.csv" using 9 smooth sbezier with lines title "http://ip_servidor/cipher"
 
 ```
-
-### Capacity Test Results
-
-The results from each of the defined scenarios can be found on the following link
