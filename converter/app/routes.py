@@ -30,7 +30,7 @@ from .models import (
 from google.cloud import storage
 
 # Authenticate ourselves using the service account private key
-client = storage.Client())
+client = storage.Client()
 
 bucket = storage.Bucket(client, 'conversion-files-bucket')
 
