@@ -1,6 +1,7 @@
 import os
 from hashlib import md5
 
+
 from flask import request
 from flask import send_from_directory
 from flask_jwt_extended import (
@@ -14,7 +15,7 @@ from werkzeug.exceptions import BadRequest, UnprocessableEntity
 from sqlalchemy import or_
 from marshmallow import ValidationError
 
-from app import app, publish_file_to_convert, STORAGE_DIR
+from app import app, publish_file_to_convert
 from .models import (
     db,
     signup_schema,
@@ -26,6 +27,15 @@ from .models import (
     Status,
     ALLOWED_FORMATS,
 )
+from google.cloud import storage
+
+# Authenticate ourselves using the service account private key
+path_to_private_key = './cloud-uniandes-4422c2d367e8.json'
+
+client = storage.Client.from_service_account_json(json_credentials_path=path_to_private_key)
+
+bucket = storage.Bucket(client, 'conversion-files-bucket')
+
 
 
 @app.route("/api/auth/signup", methods=["POST"])
@@ -133,7 +143,12 @@ def create_task():
         task.file_name = f"{task.file_name}_{task.id}"
         db.session.commit()
 
-        file.save(os.path.join(STORAGE_DIR, f"{task.file_name}.{task.old_format}"))
+        # Name of the file on the GCS once uploaded
+        blob = bucket.blob(task.file_name)
+        # Path of the local file
+        blob.upload_from_file(file)
+
+
         publish_file_to_convert(str(task.id))
 
         response = dict(message="Task created successfully", filename=task.file_name)

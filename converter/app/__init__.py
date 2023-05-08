@@ -6,6 +6,15 @@ from flask_jwt_extended import JWTManager
 from config import ENV_CONFIG
 from .models import db
 from .publisher import Publisher
+from google.cloud import storage
+
+# Authenticate ourselves using the service account private key
+path_to_private_key = './cloud-uniandes-4422c2d367e8.json'
+
+client = storage.Client.from_service_account_json(json_credentials_path=path_to_private_key)
+
+bucket = storage.Bucket(client, 'conversion-files-bucket')
+
 
 DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 DB_USER = os.environ.get("POSTGRES_USER")
@@ -15,8 +24,6 @@ DB_ADDRESS = os.environ.get("POSTGRES_NETWORK")
 SQLALCHEMY_DB_URI= f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_ADDRESS}:5432/{DB_NAME}"
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
-
-STORAGE_DIR = os.environ.get("UPLOAD_FOLDER")
 
 
 EXCHANGE_NAME = os.environ.get("EXCHANGE_NAME")
@@ -43,8 +50,7 @@ def create_app(db):
 
     app.config.from_mapping(
         JWT_SECRET_KEY=SECRET_KEY,
-        SQLALCHEMY_DATABASE_URI=SQLALCHEMY_DB_URI,
-        UPLOAD_FOLDER=STORAGE_DIR,
+        SQLALCHEMY_DATABASE_URI=SQLALCHEMY_DB_URI
     )
     app.config.from_object(ENV_CONFIG[debug])
 
