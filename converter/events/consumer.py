@@ -38,7 +38,7 @@ def execute_file_conversion(task_id:int):
         )
 
         # Get the file from Cloud Storage
-        blob = bucket.blob(task.file_name)
+        blob = bucket.blob(f"{task.file_name}.{task.old_format}")
         file_data = blob.download_as_bytes()
 
         # Call compress_file method with a file object instead of a path
