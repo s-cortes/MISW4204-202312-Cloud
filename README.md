@@ -97,7 +97,7 @@ For testing the api, it is possible to use the following Postman Collection ([li
 
 ```bash
 # Signup
-curl --location 'http://0.0.0.0:5001/api/auth/signup' \
+curl --location 'http://34.120.8.234:8080/api/auth/signup' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "username": "admin",
@@ -107,7 +107,7 @@ curl --location 'http://0.0.0.0:5001/api/auth/signup' \
 }'
 
 # Login
-curl --location 'http://0.0.0.0:5001/api/auth/login' \
+curl --location 'http://34.120.8.234:8080/api/auth/login' \
 --header 'Content-Type: application/json' \
 --data '{
     "username": "admin",
@@ -115,23 +115,23 @@ curl --location 'http://0.0.0.0:5001/api/auth/login' \
 }'
 
 # Create Compression Task | Replace <token>
-curl --location 'http://0.0.0.0:5001/api/tasks' \
+curl --location 'http://34.120.8.234:8080/api/tasks' \
 --header 'Authorization: Bearer <token>'
 
 # Get Tasks | Replace <token>
-curl --location 'http://0.0.0.0:5001/api/tasks?max=1000&order=1' \
+curl --location 'http://34.120.8.234:8080/api/tasks?max=1000&order=1' \
 --header 'Authorization: Bearer <token>'
 
 # Get Task | Replace <token>
-curl --location 'http://0.0.0.0:5001/api/tasks/<id_task>' \
+curl --location 'http://34.120.8.234:8080/api/tasks/<id_task>' \
 --header 'Authorization: Bearer <token>'
 
 # Delete Task | Replace <token> and <id_task>
-curl --location --request DELETE 'http://0.0.0.0:5001/api/tasks/<id_task>' \
+curl --location --request DELETE 'http://34.120.8.234:8080/api/tasks/<id_task>' \
 --header 'Authorization: Bearer <token>'
 
 # Get File | Replace <token> adn <file_name>
-curl --location 'http://0.0.0.0:5001/api/files/<file_name>?convertido=0' \
+curl --location 'http://34.120.8.234:8080/api/files/<file_name>?convertido=0' \
 --header 'Authorization: Bearer <token>'
 ```
 
@@ -147,7 +147,7 @@ sudo apt install apache2-utils
 sudo apt-get install gnuplot
 
 # Execute test | replace <token>
-ab -n 1000 -c 10 -H 'Authorization: Bearer <token>' -p "./converter/tests/data.txt" -T "multipart/form-data; boundary=1234567890" -rk -g "./converter/tests/outputs/output.csv" "http://0.0.0.0:5001/api/tasks?new_format=zip"
+ab -n 1000 -c 10 -H 'Authorization: Bearer <token>' -p "./converter/tests/data.txt" -T "multipart/form-data; boundary=1234567890" -rk -g "./converter/tests/outputs/output.csv" "http://34.120.8.234:8080/api/tasks?new_format=zip"
 
 # Graph results
 gnuplot plot.p
