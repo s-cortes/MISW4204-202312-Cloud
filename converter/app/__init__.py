@@ -9,7 +9,7 @@ from .publisher import Publisher
 from google.cloud import storage
 
 # Authenticate ourselves using the service account private key
-path_to_private_key = './cloud-uniandes-4422c2d367e8.json'
+path_to_private_key = '../cloud-uniandes-4422c2d367e8.json'
 
 client = storage.Client.from_service_account_json(json_credentials_path=path_to_private_key)
 
