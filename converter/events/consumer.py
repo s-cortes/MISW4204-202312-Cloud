@@ -12,9 +12,7 @@ from concurrent.futures import TimeoutError
 from google.cloud import storage
 
 
-path_to_private_key = os.environ.get("KEY_PATH")
-
-client = storage.Client.from_service_account_json(json_credentials_path=path_to_private_key)
+client = storage.Client()
 
 bucket = storage.Bucket(client, 'conversion-files-bucket')
 
