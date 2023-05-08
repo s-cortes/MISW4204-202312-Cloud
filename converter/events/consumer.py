@@ -9,13 +9,17 @@ from .converter import CustomFileCompressorFactory
 
 from google.cloud import pubsub_v1
 from concurrent.futures import TimeoutError
+from google.cloud import storage
 
+
+client = storage.Client()
+
+bucket = storage.Bucket(client, 'conversion-files-bucket')
 
 timeout = 10.0
 EXCHANGE_NAME = os.environ.get("EXCHANGE_NAME")
 QUEUE_NAME = os.environ.get("ROUTING_QUEUE")
 KEY_NAME = os.environ.get("ROUTING_KEY_NAME")
-STORAGE_DIR = os.environ.get("UPLOAD_FOLDER")
 PROJECT_ID = os.environ.get("PROJECT_ID")
 SUBSCRIPTION = os.environ.get("SUBSCRIPTION")
 
@@ -32,9 +36,18 @@ def execute_file_conversion(task_id:int):
         compressor = CustomFileCompressorFactory.get_custom_file_converter(
             task.new_format
         )
+
+        # Get the file from Cloud Storage
+        blob = bucket.blob(f"{task.file_name}.{task.old_format}")
+        file_data = blob.download_as_bytes()
+
+        # Call compress_file method with a file object instead of a path
         compressor.compress_file(
-            path=STORAGE_DIR, file_name=task.file_name, old_format=task.old_format
+            file=file_data,
+            file_name=task.file_name,
+            old_format=task.old_format
         )
+
     except NoResultFound as rnf_ex:
         status = TaskStatus.FAILED.value
         print(f"MQ - Processing Task Not Found on BD: {rnf_ex}")

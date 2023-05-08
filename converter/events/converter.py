@@ -1,4 +1,6 @@
 import os, zipfile, tarfile, py7zr
+from io import BytesIO
+from google.cloud import storage
 
 
 class CustomFileCompressor:
@@ -9,29 +11,32 @@ class CustomFileCompressor:
     new_format: str = ""
     mode: str = ""
 
-    def compress_file(self, path: str, file_name: str, old_format: str):
-        """
-        This function handles the logic for compressing a specific file
-        and storing it on a given path.
+    def compress_file(self, file: bytes, file_name: str, old_format: str):
 
-        This function requires the initialization of its class attributes,
-        therefore, it cannot be called directly from CustomFileCompressor,
-        but rather by one of its childe classes
-
-        Args:
-            path (str): path where files is stored and will be compressed
-            file_name (str): name of the file to be compressed
-            old_format (str): current file format
-        """
         print(f"Compressing {file_name}.{old_format} to {self.new_format}")
 
-        input_path = os.path.join(path, f"{file_name}.{old_format}")
-        output_path = os.path.join(path, f"{file_name}.{self.new_format}")
+        file_obj = BytesIO(file)
+        compressed_file = BytesIO()
 
-        with self.compressor_create_func(output_path, self.mode) as compressor:
-            getattr(compressor, self.compressor_insert_func)(input_path)
+        with self.compressor_create_func(compressed_file, self.mode) as compressor:
+            compressor.writestr(f"{file_name}.{old_format}", file_obj.getvalue())
 
-        print(f"Completed Compression to {output_path}")
+        compressed_file.seek(0)
+        compressed_file_bytes = compressed_file.getvalue()
+        compressed_file.close()
+        file_obj.close()
+
+        # Upload the compressed file to the Cloud Storage bucket
+        storage_client = storage.Client()
+        bucket = storage_client.bucket("conversion-files-bucket")
+        blob = bucket.blob(f"{file_name}.{self.new_format}")
+        with open(f"{file_name}.{self.new_format}", "wb") as f:
+            f.write(compressed_file_bytes)
+        blob.upload_from_filename(f"{file_name}.{self.new_format}")
+        os.remove(f"{file_name}.{self.new_format}")
+
+        print(f"Completed Compression to {self.new_format}")
+        return compressed_file_bytes
 
 
 class CustomZipCompressor(CustomFileCompressor):
