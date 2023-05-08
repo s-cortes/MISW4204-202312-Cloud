@@ -142,7 +142,7 @@ def create_task():
         db.session.commit()
 
         # Name of the file on the GCS once uploaded
-        blob = bucket.blob(task.file_name)
+        blob = bucket.blob(f"{task.file_name}.{task.old_format}") 
         # Path of the local file
         blob.upload_from_file(file)
 
