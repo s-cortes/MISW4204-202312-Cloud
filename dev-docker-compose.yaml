@@ -31,10 +31,13 @@ services:
       - converter/app.env
       - converter/events.env
     volumes:
-       - /nfs/storage:/backend/storage
+       - file_data:/backend/storage
     command: sh api.sh
     ports:
-      - 8080:5000
+      - 5001:5000
+    depends_on:
+      - rabbitmq
+      - postgres
 
   converter-async:
     container_name: 'converter-async'
@@ -48,8 +51,12 @@ services:
       - db.env
       - converter/events.env
     volumes:
-       - /nfs/storage:/backend/storage
+       - file_data:/backend/storage
     command: sh events.sh
+    depends_on:
+      - rabbitmq
+      - postgres
 
 volumes:
   postgres_data:
+  file_data:

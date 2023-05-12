@@ -1,25 +1,32 @@
 import os
 import pika
-
 from flask import Flask
 from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
 from config import ENV_CONFIG
 from .models import db
+from .publisher import Publisher
+from google.cloud import storage
+
+# Authenticate ourselves using the service account private key
+
+client = storage.Client()
+
+bucket = storage.Bucket(client, 'conversion-files-bucket')
+
 
 DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 DB_USER = os.environ.get("POSTGRES_USER")
 DB_NAME = os.environ.get("POSTGRES_DB")
-DB_NETWORK = os.environ.get("POSTGRES_NETWORK")
-SECRET_KEY = os.environ.get("SECRET_KEY")
-UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
+DB_ADDRESS = os.environ.get("POSTGRES_NETWORK")
 
-DB_ADDRESS = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_NETWORK}:5432/{DB_NAME}"
+SQLALCHEMY_DB_URI= f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_ADDRESS}:5432/{DB_NAME}"
+
+SECRET_KEY = os.environ.get("SECRET_KEY")
+
 
 EXCHANGE_NAME = os.environ.get("EXCHANGE_NAME")
 KEY_NAME = os.environ.get("ROUTING_KEY_NAME")
-
-STORAGE_DIR = os.environ.get("STORAGE_DIR")
 
 
 def publish_file_to_convert(message: str):
@@ -28,28 +35,22 @@ def publish_file_to_convert(message: str):
     Args:
         message (str): _description_
     """
-    app.logger.info(f"MQ - Starting RabbitMQ Connection")
-
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host="rabbitmq", heartbeat=600)
-    )
-    channel = connection.channel()
-    channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct")
-
-    app.logger.info(f"MQ - Basic Publish with message={message}")
-    channel.basic_publish(exchange=EXCHANGE_NAME, routing_key=KEY_NAME, body=message)
-    connection.close()
-    app.logger.info(f"MQ - Completed Basic Publish successfully")
+    debug = app.config.get("DEBUG", 0)
+    if (debug):
+        Publisher.rabbit_publisher(message)
+    else:
+        Publisher.gcp_publisher(message)
+    
 
 
 def create_app(db):
     app = Flask(__name__, instance_relative_config=True)
+    debug = app.config.get("DEBUG", 0)
+
     app.config.from_mapping(
         JWT_SECRET_KEY=SECRET_KEY,
-        SQLALCHEMY_DATABASE_URI=DB_ADDRESS,
-        UPLOAD_FOLDER=UPLOAD_FOLDER,
+        SQLALCHEMY_DATABASE_URI=SQLALCHEMY_DB_URI
     )
-    debug = app.config.get("DEBUG", 0)
     app.config.from_object(ENV_CONFIG[debug])
 
     with app.app_context():

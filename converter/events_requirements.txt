@@ -2,3 +2,5 @@ pika
 sqlalchemy
 psycopg2
 py7zr
+google.cloud.pubsub
+google-cloud-storage
