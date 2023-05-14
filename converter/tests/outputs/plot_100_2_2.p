@@ -1,6 +1,6 @@
 set terminal png size 600
 set output "output_100_2_2.png"
-set title "100 Requests, 2 Concurrent Requests, First Attempt"
+set title "100 Requests, 2 Concurrent Requests, Second Attempt"
 set size ratio 0.6
 set grid y
 set xlabel "Num. Requests"
