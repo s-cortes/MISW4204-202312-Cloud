@@ -5,7 +5,7 @@ Repository for the development of the functionalities of the cloud conversion to
 
 * [Postman Collection](https://app.getpostman.com/join-team?invite_code=cae57394629ace32d62eb6ae4f54096a&target_code=5cc4486c5f15defe8321bd338038b6af)
 * [Reporte Escenario y Pruebas de Estrés API REST y Batch](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/EaslimLTGsRIqx8LZBJhP90Bw5lfqQHnq9wXR0onI9CE0g?e=hYV1nV)
-* [Documentación de Arquitectura](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/EVD0X9HAsaRFlOO8YPJJHs0BshPCJ2mYUILeFjvxvIKc9A?e=S0OK8V)
+* [Documentación de Arquitectura](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/EZNg8fDZwgVJnBQfh_97xvEBUaCJSDBtSPtRw9rzG2mFJA?e=RYGW4m)
 * [Video Sustentación](https://uniandes-my.sharepoint.com/:f:/g/personal/l_simonetti_uniandes_edu_co/ErAUjE6lLt5PvIBWvN246XAB5NWHf39srKg1_Bs7e4F0VQ?e=0iufSi)
 
 
@@ -60,10 +60,12 @@ The project has a simple structure, represented as bellow:
 ## Architectura
 
 ### Components Model
-![4204-arquitectura-Componentes Semana 5 drawio](https://user-images.githubusercontent.com/103398826/236718422-f5210d17-c882-4349-b268-6340df9aefe4.png)
+<img width="783" alt="Screen Shot 2023-05-14 at 7 56 57 PM" src="https://github.com/s-cortes/MISW4204-202312-Cloud/assets/25346635/7116ddad-0573-412f-ae23-2421a453e89d">
+
 
 ### Deployment Model
-![4204-arquitectura-Despliegue Semana 5 drawio](https://user-images.githubusercontent.com/103398826/236718451-718825eb-89bf-405c-ba71-2cac28a279cf.png)
+<img width="734" alt="Screen Shot 2023-05-14 at 7 57 14 PM" src="https://github.com/s-cortes/MISW4204-202312-Cloud/assets/25346635/af26ffa5-e386-420a-b407-c2571fc5dc28">
+
 
 <br />
 
