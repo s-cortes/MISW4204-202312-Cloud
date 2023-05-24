@@ -9,3 +9,5 @@ ADD events /backend/events
 ADD events_requirements.txt /backend/
 
 RUN pip install -r events_requirements.txt
+ADD wsgi_events.py /backend/wsgi.py
+EXPOSE 5001

@@ -13,7 +13,7 @@ class Publisher:
     def gcp_publisher(message: str):
         topic_path = GCPPUBLISHER.topic_path(PROJECT_ID, TOPIC_ID)
         message = message.encode("utf-8")
-        GCPPUBLISHER.publish(topic_path, message)
+        GCPPUBLISHER.publish(topic_path, data=message)
 
     def rabbit_publisher(message: str):
 

@@ -1,25 +1,5 @@
 version: "3.2"
 services:
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: 'rabbitmq'
-    ports:
-      - 5672:5672
-      - 15672:15672
-  
-  postgres:
-    container_name: 'pgsql'
-    image: postgres:alpine
-    env_file:
-      - db.env
-    environment:
-      PGDATA: /data/postgres
-    volumes:
-       - postgres_data:/var/lib/postgresql/data/
-    ports:
-      - 5432:5432
-    restart: always
-
   converter-api:
     container_name: 'converter-api'
     build:
@@ -30,11 +10,9 @@ services:
       - db.env
       - converter/app.env
       - converter/events.env
-    volumes:
-       - /nfs/storage:/backend/storage
     command: sh api.sh
     ports:
-      - 8080:5000
+      - 5000:5000
 
   converter-async:
     container_name: 'converter-async'
@@ -47,9 +25,6 @@ services:
     env_file:
       - db.env
       - converter/events.env
-    volumes:
-       - /nfs/storage:/backend/storage
     command: sh events.sh
-
-volumes:
-  postgres_data:
+    ports:
+      - 5001:5001
