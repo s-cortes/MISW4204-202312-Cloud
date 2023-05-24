@@ -1,6 +1,7 @@
 version: "3.2"
 services:
   converter-api:
+    image: gcr.io/cloud-uniandes/converter-api-image
     container_name: 'converter-api'
     build:
       context: ./converter
@@ -15,6 +16,7 @@ services:
       - 5000:5000
 
   converter-async:
+    image: gcr.io/cloud-uniandes/converter-async-image
     container_name: 'converter-async'
     build:
       context: ./converter
