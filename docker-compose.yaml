@@ -13,7 +13,9 @@ services:
       - converter/events.env
     command: sh api.sh
     ports:
-      - 5000:5000
+      - "9080:${PORT:-5000}"
+    environment:
+      PORT: ${PORT:-5000}
 
   converter-async:
     image: gcr.io/cloud-uniandes/converter-async-image
@@ -24,9 +26,10 @@ services:
     working_dir: /backend/
     environment:
       PYTHONUNBUFFERED: 1
+      PORT: ${PORT:-5001}
     env_file:
       - db.env
       - converter/events.env
     command: sh events.sh
     ports:
-      - 5001:5001
+      - "9090:${PORT:-5001}"
