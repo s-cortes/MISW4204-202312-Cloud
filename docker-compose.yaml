@@ -8,7 +8,7 @@ services:
       dockerfile: api.Dockerfile
     working_dir: /backend/
     env_file:
-      - db.env
+      - converter/db.env
       - converter/app.env
       - converter/events.env
     command: sh api.sh
@@ -28,7 +28,7 @@ services:
       PYTHONUNBUFFERED: 1
       PORT: ${PORT:-5001}
     env_file:
-      - db.env
+      - converter/db.env
       - converter/events.env
     command: sh events.sh
     ports:
