@@ -15,46 +15,41 @@ The project has a simple structure, represented as bellow:
 
 ```bash
 < PROJECT ROOT >
-📦MISW4204-202312-Cloud
- ┣-- 📂converter
- ┣-- 📂app
- ┃   ┃   ┣-- 📜__init__.py
- ┃   ┃   ┣-- 📜handlers.py
- ┃   ┃   ┣-- 📜models.py
- ┃   ┃   ┣-- 📜publisher.py
- ┃   ┃   ┗-- 📜routes.py
- ┃   ┃
- ┃   ┣-- 📂config
- ┃   ┃   ┣ 📜__init__.py
- ┃   ┃   ┗ 📜config.py
- ┃   ┃
- ┃   ┣-- 📂events
- ┃   ┃   ┣-- 📜__init__.py
- ┃   ┃   ┣-- 📜consumer.py
- ┃   ┃   ┣ 📜converter.py
- ┃   ┃   ┗-- 📜models.py
- ┃   ┃
- ┃   ┣-- 📂tests
- ┃   ┃   ┣-- 📂outputs
- ┃   ┃   ┃
- ┃   ┃   ┣-- 📜data.txt
- ┃   ┃   ┗-- 📜test_file.jpg
- ┃   ┃
- ┃   ┣-- 📜api.Dockerfile
- ┃   ┣-- 📜api.sh
- ┃   ┣-- 📜api_requirements.txt
- ┃   ┣-- 📜app.env
- ┃   ┣-- 📜events.Dockerfile
- ┃   ┣-- 📜events.env
- ┃   ┣-- 📜events.sh
- ┃   ┣-- 📜events_requirements.txt
- ┃   ┗-- 📜wsgi.py
+📦 MISW4204-202312-Cloud
+ ┣-- 📦converter
+ ┃   ┣-- 📂 app
+ ┃   ┣-- 📜 __init__.py
+ ┃   ┣-- 📜 handlers.py
+ ┃   ┣-- 📜 models.py
+ ┃   ┣-- 📜 publisher.py
+ ┃   ┗-- 📜 routes.py
+ ┣-- 📂 config
+ ┃   ┣-- 📜 __init__.py
+ ┃   ┗-- 📜 config.py
+ ┣-- 📂 events
+ ┃   ┣-- 📜 __init__.py
+ ┃   ┣-- 📜 consumer.py
+ ┃   ┣-- 📜 converter.py
+ ┃   ┣-- 📜 models.py
+ ┃   ┗-- 📜 routes.py
+ ┣-- 📂 tests
+ ┃   ┣-- 📂 outputs
+ ┃   ┣-- 📜 data.txt
+ ┃   ┗-- 📜 test_file.jpg
+ ┣-- 📜 api.Dockerfile
+ ┣-- 📜 api.sh
+ ┣-- 📜 api_requirements.txt
+ ┣-- 📜 app.env
+ ┣-- 📜 db.env
+ ┣-- 📜 events.Dockerfile
+ ┣-- 📜 events.env
+ ┣-- 📜 events.sh
+ ┣-- 📜 events_requirements.txt
  ┃
- ┣-- 📜.gitignore
- ┣-- 📜LICENSE
- ┣-- 📜README.md
- ┣-- 📜db.env
- ┗-- 📜docker-compose.yaml
+ ┣-- 📜 .gitignore
+ ┣-- 📜 LICENSE
+ ┣-- 📜 README.md
+ ┗-- 📜 db.env
 ```
 
 ## Architectura
@@ -75,6 +70,9 @@ The project has a simple structure, represented as bellow:
 $ # First, clone the repo
 $ git clone https://github.com/s-cortes/MISW4204-202312-Cloud.git
 $ cd MISW4204-202312-Cloud
+$
+$ # checkout to the current branch
+$ git checkout feature-entrega-5
 $
 $ # Define a virtual environment (optional)
 $ python3 -m venv venv
