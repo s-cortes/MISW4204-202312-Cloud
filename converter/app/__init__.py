@@ -8,8 +8,10 @@ from .publisher import Publisher
 from google.cloud import storage
 from dotenv import load_dotenv
 
-load_dotenv("../app.env ")
-load_dotenv("../db.env ")
+# BASEDIR = os.path.abspath(os.path.dirname(__file__))
+# load_dotenv(os.path.join(BASEDIR, "app.env "))
+# load_dotenv(os.path.join(BASEDIR, "db.env "))
+
 
 # Authenticate ourselves using the service account private key
 client = storage.Client()
@@ -36,7 +38,7 @@ def publish_file_to_convert(message: str):
         Publisher.rabbit_publisher(message)
     else:
         Publisher.gcp_publisher(message)
-    
+
 
 
 def create_app(db):
@@ -55,11 +57,12 @@ def create_app(db):
 
     return app
 
-
 app = create_app(db)
 
 ma = Marshmallow(app)
 jwt = JWTManager(app)
 
+if __name__ == '__main__':
+	app.run("0.0.0.0", 5004)
 
 from app import routes, handlers

@@ -13,7 +13,6 @@ from google.cloud import storage
 
 
 client = storage.Client()
-
 bucket = storage.Bucket(client, 'conversion-files-bucket')
 
 timeout = 10.0

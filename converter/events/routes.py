@@ -1,21 +1,16 @@
 import base64
-import json
 
 from events import app
-#from .consumer import execute_file_conversion
+from .consumer import execute_file_conversion
 from flask import request, current_app
 
 @app.route('/pubsub/push', methods=['POST'])
 def pubsub_push():
-    if (request.args.get('token', '') !=
-            current_app.config['PUBSUB_VERIFICATION_TOKEN']):
-        return 'Invalid request', 400
-
     envelope = request.get_json()
     if not envelope:
         msg = "no Pub/Sub message received"
         print(f"error: {msg}")
-        return f"Bad Request: {msg}", 400
+        return f"Bad Request: {msg}", 422
 
     if not isinstance(envelope, dict) or "message" not in envelope:
         msg = "invalid Pub/Sub message format"
@@ -26,8 +21,11 @@ def pubsub_push():
 
     if isinstance(pubsub_message, dict) and "data" in pubsub_message:
         payload = base64.b64decode(pubsub_message["data"]).decode("utf-8").strip()
-        #task_id = int(payload)
-        #execute_file_conversion(task_id)
+        try:
+            task_id = int(payload)
+            execute_file_conversion(task_id)
+        except Exception as ex:
+            return (f"{ex}", 500)
 
     print(f"receive task {payload}!")
 

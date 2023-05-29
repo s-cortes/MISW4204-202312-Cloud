@@ -14,4 +14,7 @@ app.config['PROJECT'] = os.environ.get('PROJECT_ID')
 app.config['PUBSUB_VERIFICATION_TOKEN'] = \
     os.environ.get('PUBSUB_VERIFICATION_TOKEN')
 
+if __name__ == '__main__':
+	app.run("0.0.0.0", 5004)
+
 from events import routes

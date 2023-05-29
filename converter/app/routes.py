@@ -31,7 +31,6 @@ from google.cloud import storage
 
 # Authenticate ourselves using the service account private key
 client = storage.Client()
-
 bucket = storage.Bucket(client, 'conversion-files-bucket')
 
 
@@ -217,6 +216,17 @@ def get_task(task_id):
     except Exception as ex:
         return {"error": str(ex)}, 500
 
+@app.route("/api/tasks/delete", methods=["DELETE"])
+@jwt_required()
+def delete_tasks():
+    try:
+        num_rows_deleted = db.session.query(Task).delete()
+        db.session.commit()
+        return {"message": f"{num_rows_deleted} Tasks deleted"}, 202
+
+    except:
+        db.session.rollback()
+        return {"error": str(ex)}, 500
 
 @app.route("/api/files/<filename>", methods=["GET"])
 @jwt_required()
