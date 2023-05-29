@@ -55,8 +55,11 @@ def execute_file_conversion(task_id:int):
         print(f"MQ - Encountered Error while processing message: {ex}")
     finally:
         try:
-            task.status = status
-            session.commit()
+            if status == TaskStatus.PROCESSED.value:
+                task.status = status
+                session.commit()
+            else:
+                session.rollback()
         except Exception as ferr:
             print(f"MQ - Encountered Error while finalizing message: {ferr}")
 

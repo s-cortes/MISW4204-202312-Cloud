@@ -78,14 +78,16 @@ $ # Define a virtual environment (optional)
 $ python3 -m venv venv
 $ . venv/bin/activate
 $
-$ # Use Docker Compose CLI to run microservice
-$ docker compose up --build -d converter-api
-$ docker compose up --build -d --no-deps converter-async
+$ # Use Docker CLI to run microservice
+$ cd converter
 $
-$ # Access the UI in browser: http://127.0.0.1:5000/
+$ docker build -t converter-api --platform linux/amd64 -f api.Dockerfile .
+$ docker build -t converter-async --platform linux/amd64 -f events.Dockerfile .
 $
-$ # Remove docker containers, local images, and volumes
-$ docker compose down -v --rmi local
+$ docker build converter-api
+$ docker build converter-async
+$
+$ # Access the UI in browser: http://127.0.0.1:5004/
 $
 ```
 
@@ -147,7 +149,7 @@ sudo apt install apache2-utils
 sudo apt-get install gnuplot
 
 # Execute test | replace <token>
-ab -n 1000 -c 10 -H 'Authorization: Bearer <token>' -p "./converter/tests/data.txt" -T "multipart/form-data; boundary=1234567890" -rk -g "./converter/tests/outputs/output.csv" "http://34.120.8.234:8080/api/tasks?new_format=zip"
+ab -n 500 -c 50 -H 'Authorization: Bearer <token>' -p "./converter/tests/data.txt" -T "multipart/form-data; boundary=1234567890" -rk -g "./converter/tests/outputs/output.csv" "https://converter-api-c45lngzj6q-uc.a.run.app/api/tasks?new_format=zip"
 
 # Graph results
 gnuplot plot.p

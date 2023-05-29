@@ -1,4 +1,5 @@
 import os
+import uuid
 from hashlib import md5
 
 
@@ -128,16 +129,13 @@ def create_task():
         file_name_split = file_name.split(".")
 
         task = Task(
-            file_name=file_name_split[0],
+            file_name=str(uuid.uuid1()),
             old_format=file_name_split[1],
             new_format=new_format,
             status=Status.UPLOADED.value,
             user_id=user_id,
         )
         db.session.add(task)
-        db.session.commit()
-
-        task.file_name = f"{task.file_name}_{task.id}"
         db.session.commit()
 
         # Name of the file on the GCS once uploaded
