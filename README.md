@@ -5,8 +5,8 @@ Repository for the development of the functionalities of the cloud conversion to
 
 * [Postman Collection](https://app.getpostman.com/join-team?invite_code=cae57394629ace32d62eb6ae4f54096a&target_code=5cc4486c5f15defe8321bd338038b6af)
 * [Reporte Escenario y Pruebas de Estrés API REST y Batch]()
-* [Documentación de Arquitectura](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/ETTPzSKkcBxBqjZoFtRSHUkBLWXmfpl7oRi_MaIJApcn7A?e=zDqqe2)
-* [Video Sustentación]()
+* [Documentación de Arquitectura](https://uniandes-my.sharepoint.com/:b:/g/personal/l_simonetti_uniandes_edu_co/ETTPzSKkcBxBqjZoFtRSHUkBvgfEDwaDK4RLyWhBsvPCLQ?e=wngakg)
+* [Video Sustentación](https://uniandes-my.sharepoint.com/:f:/g/personal/l_simonetti_uniandes_edu_co/Et62EnE0UKtEj6wbQCwfsyoBTeU3Cc18WOzfaaxsxiwChw?e=zMZ21D)
 
 
 ## Code-base structure
