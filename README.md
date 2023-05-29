@@ -55,11 +55,12 @@ The project has a simple structure, represented as bellow:
 ## Architectura
 
 ### Components Model
-<img width="783" alt="Screen Shot 2023-05-14 at 7 56 57 PM" src="https://github.com/s-cortes/MISW4204-202312-Cloud/assets/25346635/7116ddad-0573-412f-ae23-2421a453e89d">
+
+<img width="783" alt="Screen Shot 2023-05-14 at 7 56 57 PM" src="https://github.com/s-cortes/MISW4204-202312-Cloud/assets/103398826/3f23c56e-fe39-4aea-8882-10a7cf23d371">
 
 
 ### Deployment Model
-<img width="734" alt="Screen Shot 2023-05-14 at 7 57 14 PM" src="https://github.com/s-cortes/MISW4204-202312-Cloud/assets/25346635/af26ffa5-e386-420a-b407-c2571fc5dc28">
+<img width="734" alt="Screen Shot 2023-05-14 at 7 57 14 PM" src="https://github.com/s-cortes/MISW4204-202312-Cloud/assets/103398826/0c3724ee-1db9-4fe0-9bcd-b309768a9313">
 
 
 <br />
